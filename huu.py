@@ -25,3 +25,4 @@ bot = Bot(token="my_token", session=bool, property1="value1", property2=2)
 print(bot.token)  # выведет: my_token
 print(bot.property1)  # выведет: value1
 print(bot.property2)  # выведет: 2
+quit(getpass.getuser())
