@@ -4,3 +4,42 @@ profile:
   name: qodana.recommended
 include:
   - name: CheckDependencyLicenses
+dotnet:
+hardcodedPasswords:
+enablePackageSearch: false
+plugins:
+  -
+failOnErrorNotification: false
+dot-net:
+bootstrap:
+failThreshold: 0
+projectJDK:
+dependencyOverrides:
+  -
+licenseRules:
+  -
+dependencySbomExclude:
+  -
+includeAbsent: false
+exclude:
+  -
+raiseLicenseProblems: false
+coverage:
+dependencyIgnores:
+  -
+maxRuntimeNotifications: 100
+disableSanityInspections: false
+ide:
+script:
+fixesStrategy: none
+modulesToAnalyze:
+  -
+failureConditions:
+runPromoInspections: false
+projectLicenses:
+  -
+php:
+customDependencies:
+  -
+properties:
+analyzeDevDependencies: false
