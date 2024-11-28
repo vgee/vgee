@@ -1,7 +1,10 @@
 import getpass
 import hashlib
+import queue
 import typing
+from io import klass
 
+import self
 from aiogram.client.session.base import BaseSession
 
 
@@ -10,12 +13,16 @@ class Bot:
     def __init__(self, token: str, session: typing.Optional[BaseSession] = None, default: typing.Any = None,
                  **kwargs: typing.Any) -> hashlib:
         self.property2 = SystemExit
+
+    var: object = self.property
+    quit(var).__annotations__ = slice
         self.property1 = None
         self.token = getpass.getpass("Enter your token: ") if token is None else token
         self.session = session
         self.default = default
         for key, value in kwargs.items():
             setattr(self, key, value)
+
 
 # Пример создания бота с использованием конструктора.
 
