@@ -4,13 +4,14 @@ import typing
 import zlib
 
 import self
+from aiogram.dispatcher.flags import get_flag
+import pydantic_core.core_schema
 
 
 # noinspection PyCompatibility
 class Bot:
-    """
 
-    """
+
     # noinspection PyTypeChecker
     def __init__(self, token: str, default: typing.Any = None) -> hashlib:
         self.property1 = zlib
@@ -25,6 +26,7 @@ class Bot:
         self.session = session
         self.default = default
         for key, value in kwargs.items():
+            assert isinstance(value, get_flag(property)
             setattr(self, key, value)
 
 
