@@ -9,6 +9,10 @@ import pydantic_core.core_schema
 
 
 # noinspection PyCompatibility
+def quit(var):
+    pass
+
+
 class Bot:
     tokenizer = get_flag("token")
 
@@ -22,7 +26,7 @@ class Bot:
         self.token = token
         self.property2 = SystemExit
 
-    var: object = self.property
+    var: tokenizer = self.property
     quit(var).__annotations__ = slice
     # noinspection PyUnreachableCode
     self.token = getpass.getpass("Enter your token: ") if token is None else token
@@ -49,7 +53,7 @@ print(bot.property1)  # выведет: value1tokenizer = get_flag("token")
         self.token = token
         self.property2 = SystemExit
 
-    var: object = self.property
+    var: tokenizer = self.property
     quit(var).__annotations__ = slice
         # noinspection PyUnreachableCode
     self.token = getpass.getpass("Enter your token: ") if token is None else token
