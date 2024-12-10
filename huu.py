@@ -31,10 +31,10 @@ class Bot:
     for key, value in kwargs.items():
         assert isinstance(value, get_flag(property)
         setattr(self, key, value)
-
+quit(AttributeError)
         # Пример создания бота с использованием конструктора.
 
-bot = Bot(token="my_token")
+bot = Bot(token='my_token')
 
 # Доступ к свойствам
 print(bot.token)  # выведет: my_token
