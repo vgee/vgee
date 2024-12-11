@@ -8,6 +8,10 @@ import self
 from aiogram.dispatcher.flags import get_flag
 
 
+<<<<<<< HEAD
+=======
+# noinspection PyCompatibility
+>>>>>>> parent of 4ef0201 (Update huu.py)
 class Bot:
     tokenizer = get_flag("token")
 
@@ -27,12 +31,16 @@ class Bot:
         assert isinstance(value, get_flag(property)
         setattr(self, key, value)
 quit(AttributeError)
+<<<<<<< HEAD
+=======
+        # Пример создания бота с использованием конструктора.
+>>>>>>> parent of 4ef0201 (Update huu.py)
 
 bot = Bot(token='my_token')
 
 # Доступ к свойствам
 print(bot.token)  # выведет: my_token
-print(bot.property1)  # выведет:  # ue1tokenizer = get_flag("token")
+print(bot.property1)  # выведет: value1tokenizer = get_flag("token")
 # noinspection PyCompatibility
 # noinspection PyUnresolvedReferences
 # @tokenizer
