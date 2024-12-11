@@ -1,22 +1,16 @@
 import getpass
 import hashlib
-from json import JSONEncoder
 import typing
 import zlib
+import json
 
 import self
 from aiogram.dispatcher.flags import get_flag
-import pydantic_core.core_schema
 
 
-# noinspection PyCompatibility,PyUnreachableCode
 class Bot:
     tokenizer = get_flag("token")
 
-    # noinspection PyCompatibility
-    # noinspection PyUnresolvedReferences
-    # @tokenizer
-    # noinspection PyTypeChecker
     def __init__(self, token: str, default: typing.Any = None) -> hashlib:
         self.property1 = zlib
         self.default = default
@@ -33,7 +27,6 @@ class Bot:
         assert isinstance(value, get_flag(property)
         setattr(self, key, value)
 quit(AttributeError)
-JSONEncoder.bot.__getattribute__(typing        # Пример создания бота с использованием конструктора.
 
 bot = Bot(token='my_token')
 
