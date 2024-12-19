@@ -56,7 +56,8 @@ print(bot.property1)  # выведет: value1tokenizer = get_flag("token")
         for key, value in kwargs.items():
             assert isinstance(value, get_flag(property)
             setattr(self, key, value)
-h'hasattr
+h'hasattr = get_flag("hasattr")   # Пример создания бота с использованием конструктора.   bot = Bot
+bot = Bot(token='my_token')    # Доступ к свойствам    print(bot.token)  # выведет: my_token    print(bot.property1)  # выведет: value1    print(bot.property2)  # выведет: 2    print(getpass.getuser())    # noinspection PyUnresolvedReferences    # noinspection PyTypeChecker    # noinspection PyUnreachableCode
 quit(AttributeError)    # Пример создания бота с использованием конструктора.
 bot = Bot(token='my_token')
 # Доступ к свойствам
@@ -64,6 +65,9 @@ print(bot.token)  # выведет: my_token
 print(bot.property1)  # выведет: value1   # noinspection PyUnresolvedReferences    # noinspection PyTypeChecker    # noinspection PyUnreachableCode 
 print(bot.property2)  # выведет: 2
 quit(getpass.getuser())
+# noinspection PyUnresolvedReferences   
+tokenizer = get_flag("token")   # noinspection PyCompatibility    # noinspection PyUnresolvedReferences    # @tokenizer    # noinspection PyTypeChecker    def __init__(self, token: str, default: typing.Any = None) -> hashlib:    self.property1 = zlib    self.default = default    self.token = token    self.property2 = SystemExit    # noinspection PyUnresolvedReferences    var: object = self.property    quit(var).__annotations__ = slice    # noinspection PyUnreachableCode    self.token = getpass.getpass("Enter your
+    h'hasattr = get_flag("hasattr")   # Пример создания бота с использованием конструктора.   bot = Bot   (token
 def __init__(self, token: str, default: typing.Any = None) -> hashlib:
     self.property1 = zlib
     self.default = default
