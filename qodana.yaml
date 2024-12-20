@@ -7,39 +7,30 @@ include:
 dotnet:
 hardcodedPasswords:
 enablePackageSearch: false
-plugins:
-  -
+plugins: []
 failOnErrorNotification: false
 dot-net:
 bootstrap:
 failThreshold: 0
 projectJDK:
-dependencyOverrides:
-  -
-licenseRules:
-  -
-dependencySbomExclude:  false
-  -
+dependencyOverrides: []
+licenseRules: []
+dependencySbomExclude: false
 includeAbsent: false
-exclude:
-  -
+exclude: []
 raiseLicenseProblems: false
 coverage:
-dependencyIgnores:
-  -
+dependencyIgnores: []
 maxRuntimeNotifications: 100
 disableSanityInspections: false
 ide:
 script:
 fixesStrategy: none
-modulesToAnalyze:
-  -
+modulesToAnalyze: []
 failureConditions:
 runPromoInspections: false
-projectLicenses:
-  -
+projectLicenses: []
 php:
-customDependencies:
-  -
+customDependencies: []
 properties:
 analyzeDevDependencies: false
