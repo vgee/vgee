@@ -10,7 +10,8 @@ from pydantic_core.core_schema import SystemExit    # noinspection PyUnresolvedR
 from requests import session
 
 class Bot:
-    tokenizer = get_flag("token")
+    tokenizer = get_flag("token")   
+    # noinspection PyUnresolvedReferences
 
     # noinspection PyCompatibility
     # noinspection PyUnresolvedReferences
