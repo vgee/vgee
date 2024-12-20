@@ -18,4 +18,4 @@ bot = Bot(token="my_token")
 # Доступ к свойствам
 print(bot.token)  # выведет: my_token
 print(bot.property1)  # выведет: <module 'zlib' (built-in)>
-quit(getpass.getuser())  # выведет: huu
+print(getpass.getuser())  # выведет: huu
