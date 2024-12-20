@@ -1,10 +1,7 @@
 import getpass
-import hashlib
 import typing
 import zlib
-import json
 import aiogram
-import self
 from aiogram.dispatcher.flags import get_flag
 
 
