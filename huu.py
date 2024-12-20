@@ -20,7 +20,7 @@ class Bot:
         self.default = default
         self.token = token if token else getpass.getpass("Enter your token: ")
         self.property2 = SystemExit
-
+        self.property3 = pydantic_core.core_schema    
     var: object = self.property
     quit(var).__annotations__ = slice
     # noinspection PyUnreachableCode
