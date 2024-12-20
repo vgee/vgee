@@ -9,10 +9,11 @@ from aiogram.dispatcher.flags import get_flag
 
 
 from requests import session
-
+from typing import Any      # импорт типа Any из модуля typing
+aiogram.types.Message.__annotations__ = Any # присвоение атрибуту __annotations__ класса Message тип Any
 class Bot:
     tokenizer = get_flag("token")
-
+bot = Bot(token="my_token") # создание объекта класса Bot с передачей токена в качестве аргумента
 def __init__(self, token: str, default: typing.Any = None, **kwargs):
     self.property1 = zlib
     self.default = default
