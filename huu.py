@@ -6,7 +6,8 @@ import zlib
 import self
 from aiogram.dispatcher.flags import get_flag
 import pydantic_core.core_schema
-
+from pydantic_core.core_schema import SystemExit    # noinspection PyUnresolvedReferences   
+from requests import session
 
 class Bot:
     tokenizer = get_flag("token")
