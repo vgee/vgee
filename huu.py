@@ -1,32 +1,19 @@
 import getpass
 import typing
 import zlib
-import aiogram
-from aiogram.dispatcher.flags import get_flag
-
-
 import requests
-from typing import Any      # импорт типа Any из модуля typing
-aiogram.types.Message.__annotations__ = Any # присвоение атрибуту __annotations__ класса Message тип Any
+
 class Bot:
-    tokenizer = get_flag("token")
-
     def __init__(self, token: str, default: typing.Any = None, **kwargs):
-        self.property1 = zlib
-        self.default = default
-        self.token = token
-        self.property2 = SystemExit
-
-        quit(self.property1).__annotations__ = slice
         self.token = getpass.getpass("Enter your token: ") if token is None else token
-        self.token = token
         self.default = default
+        self.property1 = zlib
         self.session = requests.Session()
         for key, value in kwargs.items():
-            assert isinstance(value, get_flag("some_flag"))
             setattr(self, key, value)
 
 # Пример создания бота с использованием конструктора.
+# Конструктор принимает обязательный параметр token и необязательный параметр default.
 bot = Bot(token="my_token")
 
 # Доступ к свойствам
