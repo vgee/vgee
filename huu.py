@@ -25,4 +25,3 @@ bot = Bot(token="my_token")
 print(bot.token)  # выведет: my_token
 print(bot.property1)  # выведет: <module 'zlib' (built-in)>
 print(getpass.getuser())  # выведет: huu
-# [PendingDeprecationWarning] is not valid Python code and should be removed
