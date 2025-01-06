@@ -12,6 +12,20 @@ class Bot:
         self.session = requests.Session()
         for key, value in kwargs.items():
             setattr(self, key, value)
+
+    def __del__(self):  # деструктор
+        print("Destructor called")  # деструктор
+        self.session.close()  # деструктор
+
+    def __str__(self):  # переопределение метода __str__
+        return f"Bot(token={self.token}, default={self.default})"
+
+    def __repr__(self):  # переопределение метода __repr__
+        return f"Bot(token={self.token}, default={self.default})"
+
+    def __call__(self):  # переопределение метода __call__
+        return self.default
+        return self.default
 x = Bot(token="my_token ")  # создание объекта класса Bot
 print(x.token)  # выведет: my_token
 print(x.property1)  # выведет: <module 'zlib' (built-in)>
