@@ -5,6 +5,7 @@ import zlib
 import requests
 import json # импорт модуля json
 class Bot:
+    # конструктор
     def __init__(self, token: str, default: typing.Any = None, **kwargs):
         self.token = getpass.getpass("Enter your token: ") if token is None else token
         self.default = default
