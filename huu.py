@@ -17,7 +17,6 @@ class Bot:
     def __del__(self):  # деструктор
         print("Destructor called")  # деструктор
         self.session.close()  # деструктор
-
     def __str__(self):  # переопределение метода __str__
         return f"Bot(token={self.token}, default={self.default})"
 
