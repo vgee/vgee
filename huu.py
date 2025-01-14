@@ -51,3 +51,6 @@ print(bot.property1)  # выведет: <module 'zlib' (built-in)>
 print(getpass.getuser())  # выведет: huu
 print(bot)  # выведет: Bot(token=my_token, default=None)
 print(bot())  # выведет: None
+print(bot)  # выведет: Bot(token=my_token, default=None)        
+json.dumps({"key": "value"})  # выведет: '{"key": "value"}' 
+json.loads('{"key": "value"}')  # выведет: {'key': 'value'}
