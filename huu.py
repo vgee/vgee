@@ -13,7 +13,7 @@ class Bot:
         self.session = requests.Session()
         for key, value in kwargs.items():
             setattr(self, key, value)
-
+    
     def __del__(self):  # деструктор
         print("Destructor called")  # деструктор
         self.session.close()  # деструктор
@@ -33,7 +33,6 @@ object = Bot(token="my_token")  # создание объекта класса B
 # Пример создания бота с использованием конструктора.
 # Конструктор принимает обязательный параметр token и необязательный параметр default.
 bot = Bot(token="my_token")
-
 # Доступ к свойствам
 print(bot.token)  # выведет: my_token
 print(bot.property1)  # выведет: <module 'zlib' (built-in)>
