@@ -25,7 +25,6 @@ class Bot:
 
     def __call__(self):  # переопределение метода __call__
         return self.default
-        return self.default
 x = Bot(token="my_token ")  # создание объекта класса Bot
 print(x.token)  # выведет: my_token
 print(x.property1)  # выведет: <module 'zlib' (built-in)>
@@ -42,15 +41,6 @@ print(getpass.getuser())  # выведет: huu
 print(bot) # выведет: Bot(token=my_token, default=None) 
 print(object == bot)  # выведет: False
 print(object())  # выведет: None
-print(bot())  # выведет: None 
-# Пример создания бота с использованием конструктора.
-# Конструктор принимает обязательный параметр token и необязательный параметр default.
-bot = Bot(token="my_token") # создание объекта класса Bot
-print(bot.token)  # выведет: my_token 
-print(bot.property1)  # выведет: <module 'zlib' (built-in)>
-print(getpass.getuser())  # выведет: huu
-print(bot)  # выведет: Bot(token=my_token, default=None)
 print(bot())  # выведет: None
-print(bot)  # выведет: Bot(token=my_token, default=None)        
 json.dumps({"key": "value"})  # выведет: '{"key": "value"}' 
 json.loads('{"key": "value"}')  # выведет: {'key': 'value'}
