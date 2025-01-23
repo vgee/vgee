@@ -2,7 +2,7 @@ import getpass
 # import token module is not needed
 import typing
 import zlib
-import requests
+import requests # type: ignore
 import json # импорт модуля json
 class Bot:
     # конструктор
