@@ -1,45 +1,50 @@
-import getpass
-# import token module is not needed
 import typing
-import zlib
-import requests # type: ignore
-import json # импорт модуля json
+import json
+import getpass
+import requests
+
 class Bot:
     # конструктор
     def __init__(self, token: str, default: typing.Any = None, **kwargs):
         self.token = getpass.getpass("Enter your token: ") if token is None else token
         self.default = default
-        self.property1 = zlib
         self.session = requests.Session()
         for key, value in kwargs.items():
             setattr(self, key, value)
     # деструктор    
     def __del__(self):  # деструктор
         print("Destructor called")  # деструктор
-        self.session.close()  # деструктор
-    def __str__(self):  # переопределение метода __str__
-        return f"Bot(token={self.token}, default={self.default})"
-
+        # метод для явного закрытия сессии
+        def close(self):
+            print("Session closed")
+            self.session.close()
     def __repr__(self):  # переопределение метода __repr__
         return f"Bot(token={self.token}, default={self.default})"
 
     def __call__(self):  # переопределение метода __call__
         return self.default
-x = Bot(token="my_token ")  # создание объекта класса Bot
-print(x.token)  # выведет: my_token
-print(x.property1)  # выведет: <module 'zlib' (built-in)>
-print(getpass.getuser())  # выведет: huu' 
+
+    def __eq__(self, other):  # переопределение метода __eq__
+        if isinstance(other, Bot):
+            return self.token == other.token and self.default == other.default
+        return False
 object = Bot(token="my_token")  # создание объекта класса Bot
 # Пример создания бота с использованием конструктора.
 # Конструктор принимает обязательный параметр token и необязательный параметр default.
-bot = Bot(token="my_token")
+bot_object = Bot(token="my_token")  # создание объекта класса Bot
 # Доступ к свойствам
 print(bot.token)  # выведет: my_token
-print(bot.property1)  # выведет: <module 'zlib' (built-in)>
 print(getpass.getuser())  # выведет: huu    
 print(bot) # выведет: Bot(token=my_token, default=None) 
 print(object == bot)  # выведет: False
 print(object())  # выведет: None
 print(bot())  # выведет: None
+print(bot_object == bot)  # выведет: False
+print(bot_object())  # выведет: None
+print(bot())  # выведет: None
 json.dumps({"key": "value"})  # выведет: '{"key": "value"}' 
-json.loads('{"key": "value"}')  # выведет: {'key': 'value'}
+json.loads('{"key": "value"}')  # выведет: {'key': 'value'}print(object == bot)  # выведет: False
+object.close()  # явное закрытие сессии
+bot.close()  # явное закрытие сессии
+json.loads('{"key": "value"}')  # выведет: {'key': 'value'}print(bot_object == bot)  # выведет: False
+bot_object.close()  # явное закрытие сессии
