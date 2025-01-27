@@ -2,7 +2,7 @@ import typing
 import json
 import getpass
 import requests
-
+import aiogram
 class Bot:
     # конструктор
     def __init__(self, token: str, default: typing.Any = None, **kwargs):
