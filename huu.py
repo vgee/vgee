@@ -13,7 +13,7 @@ class Bot:
         self.session = requests.Session()
         for key, value in kwargs.items():
             setattr(self, key, value)
-    
+    # деструктор    
     def __del__(self):  # деструктор
         print("Destructor called")  # деструктор
         self.session.close()  # деструктор
