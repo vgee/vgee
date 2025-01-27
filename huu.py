@@ -1,7 +1,7 @@
 import typing
 import json
 import getpass
-import requests
+import requests # type: ignore
 import aiogram
 class Bot:
     # конструктор
