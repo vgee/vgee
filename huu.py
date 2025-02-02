@@ -30,6 +30,7 @@ class Bot:
 object = Bot(token="my_token")  # создание объекта класса Bot
 # Пример создания бота с использованием конструктора.
 # Конструктор принимает обязательный параметр token и необязательный параметр default.
+bot = Bot(token="my_token")  # создание объекта класса Bot
 bot_object = Bot(token="my_token")  # создание объекта класса Bot
 # Доступ к свойствам
 print(bot.token)  # выведет: my_token
