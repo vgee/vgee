@@ -2,6 +2,12 @@ import typing
 import json
 import getpass
 import aiogram
+
+
+def property(args):
+    pass
+
+
 class Bot:
     # конструктор
     def __init__(self, token: str, default: typing.Any = None, **kwargs):
@@ -20,6 +26,7 @@ class Bot:
     def __repr__(self):  # переопределение метода __repr__
         return f"Bot(token={self.token}, default={self.default})"
 
+    @property
     def __call__(self):  # переопределение метода __call__
         return self.default
 
