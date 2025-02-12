@@ -25,7 +25,12 @@ class Bot:
             self.session.close()
     def __repr__(self):  # переопределение метода __repr__
         return f"Bot(token={self.token}, default={self.default})"
-
+    @property  # декоратор свойства token   
+    def token(self):  # геттер свойства token
+        return self.__token
+    @token.setter  # сеттер свойства token
+    def token(self, value):  # сеттер свойства token
+        self.__token = value
     @property
     def __call__(self):  # переопределение метода __call__
         return self.default
@@ -55,3 +60,4 @@ object.close()  # явное закрытие сессии
 bot.close()  # явное закрытие сессии
 json.loads('{"key": "value"}')  # выведет: {'key': 'value'}print(bot_object == bot)  # выведет: False
 bot_object.close()  # явное закрытие сессии
+bot.close()  # явное закрытие сессии    
