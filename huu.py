@@ -2,6 +2,7 @@ import typing
 import json
 import getpass
 import aiogram
+import requests
 
 
 def property(args):
