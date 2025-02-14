@@ -8,7 +8,7 @@ import requests
 def property(args):
     pass
 
-
+    json = None # импортирование модуля json        
 class Bot:
     # конструктор
     def __init__(self, token: str, default: typing.Any = None, **kwargs):
