@@ -6,7 +6,7 @@ import requests
 
 
 def property(args):
-    pass
+    pass # заглушка для декоратора property 
 
     json = None # импортирование модуля json        
 class Bot:
