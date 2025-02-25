@@ -1,10 +1,11 @@
+from socket import if_nameindex
 import typing
 import json
 import getpass
 import aiogram
 import requests
 
-
+    global property  # глобальное пространство имен
 def property(args):
     pass # заглушка для декоратора property 
 
@@ -15,7 +16,7 @@ class Bot:
         self.token = getpass.getpass("Enter your token: ") if token is None else token
         self.default = default
         self.session = requests.Session()
-        for key, value in kwargs.items():
+        for key, value in kwargs.items():if_nameindex   
             setattr(self, key, value)
     # деструктор    
     def __del__(self):  # деструктор
