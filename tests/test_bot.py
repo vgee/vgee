@@ -20,6 +20,9 @@ class TestBot(unittest.TestCase):
 
     def test_close(self):
         self.bot.close()
+        self.new_method()
+
+    def new_method(self):
         self.assertFalse(self.bot.session)
 
 if __name__ == "__main__":
