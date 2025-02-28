@@ -1,32 +1,34 @@
-# Проект VGEE
+# VGEE Project
 
-## Описание
+VGEE (Very Good Example Environment) is a sample project to demonstrate various coding practices and testing strategies.
 
-Этот проект предназначен для демонстрации возможностей бота, написанного на Python с использованием библиотеки `aiogram`.
+## Installation
 
-## Установка
+To install the required dependencies, run:
+```sh
+pip install -r requirements.txt
+```
 
-1. Клонируйте репозиторий:
+## Usage
+
+1. Clone the repository:
     ```sh
     git clone https://github.com/yourusername/vgee.git
     ```
-2. Перейдите в директорию проекта:
+2. Navigate to the project directory:
     ```sh
     cd vgee
     ```
-3. Установите зависимости:
+3. Install the dependencies:
     ```sh
     pip install -r requirements.txt
     ```
-
-## Использование
-
-1. Запустите бота:
+4. Run the bot:
     ```sh
     python main.py
     ```
-2. Следуйте инструкциям для ввода токена.
+5. Follow the instructions to enter the token.
 
-## Контакты
+## Contacts
 
-Если у вас есть вопросы или вам нужна дополнительная информация, свяжитесь с нами по адресу support@example.com.
+If you have any questions or need further information, please contact us at support@example.com.
