@@ -2,7 +2,7 @@ import typing
 import json
 import getpass
 import aiogram
-import requests  # добавлен импорт requests
+import requests  # type: ignore # добавлен импорт requests
 
 def property(args):
     pass  # заглушка для декоратора property 

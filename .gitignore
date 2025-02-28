@@ -361,3 +361,23 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Игнорировать файлы и директории, созданные Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Игнорировать файлы конфигурации среды
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Игнорировать файлы и директории, созданные редакторами и IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace

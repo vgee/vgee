@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - DEFAULT_SETTING=${DEFAULT_SETTING}
+    volumes:
+      - .:/app
+    command: ["python", "main.py"]
