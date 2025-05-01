@@ -1,4 +1,4 @@
 {
   "TestFramework": "unittest",
-  "Interpreter": "env\\Scripts\\python.exe"
+  "Interpreter": "env1\\Scripts\\python.exe"
 }

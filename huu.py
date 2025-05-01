@@ -1,7 +1,7 @@
 import typing
 import json
 import getpass
-import aiogram
+import aiogram # type: ignore # добавлен импорт aiogram
 import requests  # type: ignore # добавлен импорт requests
 
 def property(args):
