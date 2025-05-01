@@ -1,4 +1,4 @@
- import typing
+import typing
 import json
 import getpass
 import aiogram # type: ignore # добавлен импорт aiogram
