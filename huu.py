@@ -8,6 +8,9 @@ def property(args):
     pass  # заглушка для декоратора property 
 
 class Bot:
+    # атрибуты класса
+    __slots__ = ('__token', '__default', 'session')
+                 
     # конструктор
     def __init__(self, token: str, default: typing.Any = None, **kwargs):
         self.token = getpass.getpass("Enter your token: ") if token is None else token
