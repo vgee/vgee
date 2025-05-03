@@ -3,8 +3,21 @@ import json
 import getpass
 import aiogram # type: ignore # добавлен импорт aiogram
 import requests  # type: ignore # добавлен импорт requests
+import logging  # type: ignore # добавлен импорт logging    
+import asyncio  # type: ignore # добавлен импорт asyncio    
+class BotError(Exception):
+    """Базовый класс для ошибок бота."""
+    pass
+class BotTokenError(BotError):
+    """Ошибка, связанная с токеном бота.
 
-def property(args):
+    Эта ошибка должна быть вызвана, если токен бота отсутствует, недействителен 
+    или не соответствует ожидаемому формату.
+    """
+    pass    
+global __slots__    
+__slots__ = ('__token', '__default', 'session')  # добавлено определение __slots__
+def property_placeholder(args):
     pass  # заглушка для декоратора property 
 
 class Bot:
@@ -17,7 +30,7 @@ class Bot:
         self.default = default
         self.session = requests.Session()
         for key, value in kwargs.items():
-            setattr(self, key, value)
+            (self, key, value)
     # деструктор    
     def __del__(self):
         print("Destructor called")
@@ -45,7 +58,7 @@ class Bot:
             return self.token == other.token and self.default == other.default
         return False
 
-# Пример создания бота с использованием конструктора.
+# Пример создания бота с использованием конструктора, демонстрирующий обработку токена, управление сессией и доступ к свойствам.
 bot = Bot(token="my_token")
 # Доступ к свойствам
 print(bot.token)  # выведет: my_token
