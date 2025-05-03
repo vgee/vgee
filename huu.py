@@ -24,12 +24,16 @@ class Bot:
         print("Session closed")
         self.session.close()
     def __repr__(self):
-        return f"Bot(token={self.token}, default={self.default})"
+        token_repr = self.token if hasattr(self, 'token') else "Uninitialized"
+        default_repr = self.default if hasattr(self, 'default') else "Uninitialized"
+        return f"Bot(token={token_repr}, default={default_repr})"
     @property
     def token(self):
         return self.__token
     @token.setter
     def token(self, value):
+        if value is None:
+            raise ValueError("Token cannot be None")
         self.__token = value
     def __call__(self):
         return self.default
