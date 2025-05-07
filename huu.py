@@ -33,15 +33,17 @@ class Bot:
        for key, value in kwargs.items():
            setattr(self, key, value)
 
-   # деструктор
-   def __del__(self):
-       print("Destructor called")
-       self.close()
-
    # метод для явного закрытия сессии
    def close(self):
        print("Session closed")
        self.session.close()
+
+   # реализация контекстного менеджера
+   def __enter__(self):
+       return self
+
+   def __exit__(self, exc_type, exc_value, traceback):
+       self.close()
 
    def __repr__(self):
        token_repr = self.token if hasattr(self, 'token') else "Uninitialized"
@@ -79,15 +81,12 @@ class Bot:
 import os
 
 # Retrieve the token securely from an environment variable
-bot = Bot(token=os.getenv("BOT_TOKEN", None))
-
-# Пример создания бота с использованием конструктора, демонстрирующий обработку токена, управление сессией и доступ к свойствам.
-# Removed the call to getpass.getuser() as it is unrelated to the Bot class.
-# Доступ к свойствам
-print(bot.token)  # выведет: my_token
-print(bot)  # выведет: Bot(token=my_token, default=None)
-print(bot == bot)  # выведет: True
-print(bot())  # выведет: None
-json.dumps({"key": "value"})  # выведет: '{"key": "value"}'
-json.loads('{"key": "value"}')  # выведет: {'key': 'value'}
-bot.close()  # явное закрытие сессии
+with Bot(token=os.getenv("BOT_TOKEN", None)) as bot:
+   # Пример создания бота с использованием конструктора, демонстрирующий обработку токена, управление сессией и доступ к свойствам.
+   print(bot.token)  # выведет: my_token
+   print(bot)  # выведет: Bot(token=my_token, default=None)
+   print(bot == bot)  # выведет: True
+   print(bot())  # выведет: None
+   json.dumps({"key": "value"})  # выведет: '{"key": "value"}'
+   json.loads('{"key": "value"}')  # выведет: {'key': 'value'}
+# Сессия автоматически закрывается при выходе из блока with
