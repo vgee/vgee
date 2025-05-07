@@ -1,4 +1,3 @@
-
 import typing
 import json
 import getpass
@@ -66,15 +65,16 @@ class Bot:
        This method allows an instance of the Bot class to be called as a function,
        returning the value of the 'default' attribute.
        """
-    
-def __eq__(self, other):
-    """
-    Compares two Bot instances for equality.
+       return self.default
 
-    Two Bot instances are considered equal if their token and default attributes are identical.
-    """
-    if isinstance(other, Bot):
-        return self.token == other.token and self.default == other.default
+   def __eq__(self, other):
+       """
+       Compares two Bot instances for equality.
+
+       Two Bot instances are considered equal if their token and default attributes are identical.
+       """
+       if isinstance(other, Bot):
+           return self.token == other.token and self.default == other.default
 
 import os
 
@@ -85,42 +85,6 @@ bot = Bot(token=os.getenv("BOT_TOKEN", None))
 # Removed the call to getpass.getuser() as it is unrelated to the Bot class.
 # Доступ к свойствам
 print(bot.token)  # выведет: my_token
-print(bot)  # выведет: Bot(token=my_token, default=None)
-print(bot == bot)  # выведет: True
-print(bot())  # выведет: None
-json.dumps({"key": "value"})  # выведет: '{"key": "value"}'
-json.loads('{"key": "value"}')  # выведет: {'key': 'value'}
-bot.close()  # явное закрытие сессии
-"""
-        Returns the default value associated with the bot.
-
-        This method allows an instance of the Bot class to be called as a function,
-        returning the value of the 'default' attribute.
-        """
-raise ValueError("Token cannot be None")
-self.__token = value
-
-def __call__(self):
-    return self.default
-
-def __eq__(self, other):
-        """
-        Compares two Bot instances for equality.
-    
-        Two Bot instances are considered equal if their token and default attributes are identical.
-        """
-        if isinstance(other, Bot):
-            return self.token == other.token and self.default == other.default
-import os
-
-# Retrieve the token securely from an environment variable
-bot = Bot(token=os.getenv("BOT_TOKEN", None))
-
-# Пример создания бота с использованием конструктора, демонстрирующий обработку токена, управление сессией и доступ к свойствам.
-# Removed the call to getpass.getuser() as it is unrelated to the Bot class.
-# Доступ к свойствам
-print(bot.token)  # выведет: my_token
-print(getpass.getuser())  # выведет: huu    
 print(bot)  # выведет: Bot(token=my_token, default=None)
 print(bot == bot)  # выведет: True
 print(bot())  # выведет: None
