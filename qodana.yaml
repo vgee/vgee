@@ -4,36 +4,16 @@ profile:
   name: qodana.recommended
 include:
   - name: CheckDependencyLicenses
-dotnet:
+dotnet: {}
 hardcodedPasswords:
 enablePackageSearch: false
 plugins: []
 failOnErrorNotification: false
 dot-net:
-  bootstrap:
-  failThreshold: 0
-  projectJDK:
-  dependencyOverrides: []
-  licenseRules: []
-  dependencySbomExclude: false
-  includeAbsent: false
-  exclude: []
-  raiseLicenseProblems: false
-  coverage:
-  dependencyIgnores: []
-  maxRuntimeNotifications: 100
-  disableSanityInspections: false
-  ide:
-  script:
-  fixesStrategy: none
-  modulesToAnalyze: []
-  failureConditions:
-  runPromoInspections: false
-  projectLicenses: []
-php:
-  customDependencies: []
+  solution: "path/to/solution.sln"
+php: {}
 properties:
-  analyzeDevDependencies: false
-  enableCodeAnalysis: true
-  maxIssues: 500
+  analyzeDevDependencies: "false"
+  enableCodeAnalysis: "true"
+  maxIssues: "500"
   reportFormat: "html"
