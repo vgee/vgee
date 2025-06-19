@@ -22,6 +22,10 @@ class Bot:
         for key, value in kwargs.items():
             setattr(self, key, value)
 
+    @property
+    def __class__(self):
+        return super ( ).__class__
+
     # деструктор
     def __del__(self):
         print("Destructor called")
