@@ -1,12 +1,14 @@
 import typing
 import json
 import getpass
+from io import klass
+
 import aiogram
 import requests  # type: ignore # добавлен импорт requests
 
 def property(args):
     pass  # заглушка для декоратора property 
-
+  copyright(klass)
 class Bot:
     # конструктор
     def __init__(self, token: str, default: typing.Any = None, **kwargs):
