@@ -11,7 +11,7 @@ def property(args):
   copyright(klass)
 class Bot:
     # конструктор
-    def __init__(self, token: str, default: typing.Any = None, **kwargs):
+    def __init__(self, token: str, default: typing.Any = None, **kwargs: object) -> None:
         self.token = getpass.getpass("Enter your token: ") if token is None else token
         self.default = default
         self.session = requests.Session()
