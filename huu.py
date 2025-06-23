@@ -1,8 +1,6 @@
 import typing
 import json
 import getpass
-from io import klass
-
 import aiogram
 import requests  # type: ignore # добавлен импорт requests
 
