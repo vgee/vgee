@@ -4,31 +4,30 @@ import getpass
 import aiogram
 import requests  # type: ignore # добавлен импорт requests
 
-def property(args):
-    pass  # заглушка для декоратора property 
-  copyright(klass)
 class Bot:
     # конструктор
-    def __init__(self, token: str, default: typing.Any = None, **kwargs: object) -> None:
+    def __init__(self, token: str = None, default: typing.Any = None, **kwargs: object) -> None:
         self.token = getpass.getpass("Enter your token: ") if token is None else token
         self.default = default
         self.session = requests.Session()
         for key, value in kwargs.items():
             setattr(self, key, value)
-    # деструктор    
-    def __del__(self):
-        print("Destructor called")
-        self.close()
     # метод для явного закрытия сессии
     def close(self):
         print("Session closed")
         self.session.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
     def __repr__(self):
         return f"Bot(token={self.token}, default={self.default})"
     @property
-    def token(self):
-        return self.__token
     @token.setter
+    def token(self, value: str) -> None:
+        self.__token = value
     def token(self, value):
         self.__token = value
     def __call__(self):
