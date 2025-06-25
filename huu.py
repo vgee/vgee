@@ -37,7 +37,6 @@ class Bot:
         if isinstance(other, Bot):
             return self.token == other.token and self.default == other.default
         return False
-
 # Пример создания бота с использованием конструктора.
 bot = Bot(token="my_token")
 # Доступ к свойствам
