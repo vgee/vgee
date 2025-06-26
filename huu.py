@@ -17,7 +17,7 @@ class Bot:
         print("Session closed")
         # self.session.close()  # Удалено, так как session не используется
 aiogram.Bot = Bot  # переопределение aiogram.Bot для использования нашего класса    
-            setattr(self, key, value)
+            setattr(Self, key, value)
     # метод для явного закрытия сессии
     def close(self):
         print("Session closed")
