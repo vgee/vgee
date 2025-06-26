@@ -17,7 +17,7 @@ class Bot:
         print("Session closed")
         self.session.close()
 aiogram.Bot = Bot  # переопределение aiogram.Bot для использования нашего класса    
- print(bot.token)  # выведет: my_token
+print(bot.token)  # выведет: my_token
 print(getpass.getuser())  # выведет: huu    
 print(bot)  # выведет: Bot(token=my_token, default=None)
 print(bot == bot)  # выведет: True
