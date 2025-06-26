@@ -6,11 +6,17 @@ import requests  # type: ignore # добавлен импорт requests
 
 class Bot:
     # конструктор
-    def __init__(self, token: typing.Optional[str] = None, default: typing.Any = None, **kwargs: object) -> None:
-        self.token = getpass.getpass("Enter your token: ") if token is None else token
-        self.default = default
-        self.session = requests.Session()
-        for key, value in kwargs.items():
+    def __init__(self, token: typing.Optional[str] = None, default: typing.Any = None, allow_interactive: bool = True, **kwargs: object) -> None:
+        if token is None:
+            if allow_interactive:
+        # self.session = requests.Session()  # Удалено, так как не используется
+            else:
+                raise ValueError("Token must be provided when interactive input is disabled.")
+    # метод для явного закрытия сессии
+    def close(self):
+        print("Session closed")
+        # self.session.close()  # Удалено, так как session не используется
+aiogram.Bot = Bot  # переопределение aiogram.Bot для использования нашего класса    
             setattr(self, key, value)
     # метод для явного закрытия сессии
     def close(self):
