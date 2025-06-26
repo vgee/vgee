@@ -17,11 +17,12 @@ class Bot:
         print("Session closed")
         self.session.close()
 aiogram.Bot = Bot  # переопределение aiogram.Bot для использования нашего класса    
+
+bot = Bot(token="my_token")  # создаем экземпляр Bot
+
 print(bot.token)  # выведет: my_token
 print(getpass.getuser())  # выведет: huu    
-print(bot)  # выведет: Bot(token=my_token, default=None)
-print(bot == bot)  # выведет: True
-print(bot())  # выведет: None
-json.dumps({"key": "value"})  # выведет: '{"key": "value"}'
-json.loads('{"key": "value"}')  # выведет: {'key': 'value'}
-bot.close()  # явное закрытие сессии
+print(bot)  # выведет: <__main__.Bot object at ...>
+print(json.dumps({"key": "value"}))  # выведет: '{"key": "value"}'
+print(json.loads('{"key": "value"}'))  # выведет: {'key': 'value'}
+bot.close()  # type: ignore # явное закрытие сессии
