@@ -6,7 +6,7 @@ import requests  # type: ignore # добавлен импорт requests
 
 class Bot:
     # конструктор
-    def __init__(self, token: str = None, default: typing.Any = None, **kwargs: object) -> None:
+    def __init__(self, token: typing.Optional[str] = None, default: typing.Any = None, **kwargs: object) -> None:
         self.token = getpass.getpass("Enter your token: ") if token is None else token
         self.default = default
         self.session = requests.Session()
@@ -16,7 +16,7 @@ class Bot:
     def close(self):
         print("Session closed")
         self.session.close()
-
+aiogram.Bot = Bot  # переопределение aiogram.Bot для использования нашего класса    
     def __enter__(self):
         return self
 
