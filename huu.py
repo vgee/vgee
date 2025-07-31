@@ -1,8 +1,5 @@
-from email.policy import default
-import token
 import typing
-import aiogram
-import requests
+import requests  # импортируем requests для работы с HTTP запросами
 import self  # type: ignore # добавлен импорт requests
 
 class Bot:
@@ -23,10 +20,8 @@ class Bot:
     # метод для явного закрытия сессии
     def close(self):
         print("Session closed")
-bot = Bot(token="my_token")  # создаем экземпляр Bot
-
     # метод для отправки сообщений
-    def send_message(self, chat_id: int, text: str) -> None:
+    def send_message(self: "Bot", chat_id: int, text: str) -> None:
         url = f"https://api.telegram.org/bot{self.token}/sendMessage"
         payload: dict[str, typing.Any] = {
             "chat_id": chat_id,
@@ -35,7 +30,5 @@ bot = Bot(token="my_token")  # создаем экземпляр Bot
         response: requests.Response = self.session.post(url, json=payload)
         if response.status_code != 200:
             raise Exception(f"Failed to send message: {response.text}")
-        }
-        response: requests.Response = self.session.post(url, json=payload)
-        if response.status_code != 200:
-            raise Exception(f"Failed to send message: {response.text}")
+
+bot = Bot(token="my_token")  # создаем экземпляр Bot
