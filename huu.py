@@ -1,7 +1,7 @@
 import typing
 import requests  # импортируем requests для работы с HTTP запросами
 import self  # type: ignore # добавлен импорт requests
-
+import aiogram  # type: ignore # добавлен импорт aiogram
 class Bot:
     # конструктор
     def __init__(self, token: typing.Optional[str] = None, default: typing.Any = None, allow_interactive: bool = True, **kwargs: object) -> None:
