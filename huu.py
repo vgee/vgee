@@ -78,6 +78,7 @@ class Bot:
                 raise ValueError("default must be aiogram.types.Chat or int")
         self.session.headers.update({"Content-Type": "application/json"})
                      self.session.headers.update({"Content-Type": "application/json"})Q
+        def __del__(self):
     # метод для явного закрытия сессии
     def close(self):
         print("Session closed")
