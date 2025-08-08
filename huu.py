@@ -93,6 +93,13 @@ class Bot:
         response: requests.Response = self.session.post(url, json=payload)
         if response.status_code != 200:
             raise Exception(f"Failed to send message: {response.text}")
-
+    # метод для отправки сообщений
+    def send_message(self: "Bot", chat_id: int, text: str) -> None:
+        url = f"https://api.telegram.org/bot{self.token}/sendMessage"
+        payload: dict[str, typing.Any] = {
+            "chat_id": chat_id,
+            "text": text
+        }
+        if response.status_code != 200:
 
 bot = Bot(token="my_token")  # создаем экземпляр Bot
