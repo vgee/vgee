@@ -68,8 +68,7 @@ class Bot:
         self.allow_interactive = allow_interactive
         self.session = requests.Session()  # создаем сессию requests
         self.session.headers.update({}
-          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.
-                                                                    36"})
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/53736"})
         if self.default is not None:
             if isinstance(self.default, aiogram.types.Chat):
                 self.default = self.default.id
