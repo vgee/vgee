@@ -19,38 +19,8 @@ import aiogram  # type: ignore # добавлен импорт aiogram
         if self.default is not None:
             if isinstance(self.default, aiogram.types.Chat):
                 self.default = self.default.id
-            elif isinstance(self.default, int):
-                pass
-            else:
+            elif not isinstance(self.default, int):
                 raise ValueError("default must be aiogram.types.Chat or int")
-            if self.default is not None:
-                if isinstance(self.default, aiogram.types.Chat):
-                    self.default = self.default.id
-                elif isinstance(self.default, int):
-                    pass
-                else:
-                    raise ValueError("default must be aiogram.types.Chat or int")
-                if self.default is not None:
-                    if isinstance(self.default, aiogram.types.Chat):
-                        self.default = self.default.id
-                    elif isinstance(self.default, int):
-                        pass
-                    else:
-                        raise ValueError("default must be aiogram.types.Chat or int")
-                    if self.default is not None:
-                        if isinstance(self.default, aiogram.types.Chat):
-                            self.default = self.default.id
-                        elif isinstance(self.default, int):
-                            pass
-                        else:
-                            raise ValueError("default must be aiogram.types.Chat or int")
-                        if self.default is not None:
-                            if isinstance(self.default, aiogram.types.Chat):
-                                self.default = self.default.id
-                            elif isinstance(self.default, int):
-                                pass
-                            else:
-                                raise ValueError("default must be aiogram.types.Chat or int")
 
 
 # noinspection PyUnreachableCode
@@ -138,10 +108,19 @@ class Bot:
     # метод для отправки сообщений
     def send_message(self: "Bot", chat_id: int, text: str) -> None:
         url = f"https://api.telegram.org/bot{self.token}/sendMessage"
-        payload: dict[str, typing.Any] = {
+        payload: dict[str, typing.Any] = { # pyright: ignore[reportUnusedVariable]
             "chat_id": chat_id,
             "text": text
         }
         if response.status_code != 200:
 
 bot = Bot(token="my_token")  # создаем экземпляр Bot
+        response: requests.Response = self.session.post(url, json=payload)
+        if response.status_code != 200:
+            raise Exception(f"Failed to send message: {response.text}")  # отправляем POST запрос       
+        return bot
+    def __del__(self):      # метод для явного закрытия сессии
+        def close(self):
+            print("Session closed")
+            self.session.close()        self.session.close()    def __del__(self):
+                 
