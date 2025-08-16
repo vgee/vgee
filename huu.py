@@ -19,38 +19,8 @@ import aiogram  # type: ignore # добавлен импорт aiogram
         if self.default is not None:
             if isinstance(self.default, aiogram.types.Chat):
                 self.default = self.default.id
-            elif isinstance(self.default, int):
-                pass
-            else:
+            elif not isinstance(self.default, int):
                 raise ValueError("default must be aiogram.types.Chat or int")
-            if self.default is not None:
-                if isinstance(self.default, aiogram.types.Chat):
-                    self.default = self.default.id
-                elif isinstance(self.default, int):
-                    pass
-                else:
-                    raise ValueError("default must be aiogram.types.Chat or int")
-                if self.default is not None:
-                    if isinstance(self.default, aiogram.types.Chat):
-                        self.default = self.default.id
-                    elif isinstance(self.default, int):
-                        pass
-                    else:
-                        raise ValueError("default must be aiogram.types.Chat or int")
-                    if self.default is not None:
-                        if isinstance(self.default, aiogram.types.Chat):
-                            self.default = self.default.id
-                        elif isinstance(self.default, int):
-                            pass
-                        else:
-                            raise ValueError("default must be aiogram.types.Chat or int")
-                        if self.default is not None:
-                            if isinstance(self.default, aiogram.types.Chat):
-                                self.default = self.default.id
-                            elif isinstance(self.default, int):
-                                pass
-                            else:
-                                raise ValueError("default must be aiogram.types.Chat or int")
 
 
 # noinspection PyUnreachableCode
