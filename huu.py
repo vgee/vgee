@@ -108,7 +108,7 @@ class Bot:
     # метод для отправки сообщений
     def send_message(self: "Bot", chat_id: int, text: str) -> None:
         url = f"https://api.telegram.org/bot{self.token}/sendMessage"
-        payload: dict[str, typing.Any] = {
+        payload: dict[str, typing.Any] = { # pyright: ignore[reportUnusedVariable]
             "chat_id": chat_id,
             "text": text
         }
