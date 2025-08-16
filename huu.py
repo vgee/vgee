@@ -115,3 +115,12 @@ class Bot:
         if response.status_code != 200:
 
 bot = Bot(token="my_token")  # создаем экземпляр Bot
+        response: requests.Response = self.session.post(url, json=payload)
+        if response.status_code != 200:
+            raise Exception(f"Failed to send message: {response.text}")  # отправляем POST запрос       
+        return bot
+    def __del__(self):      # метод для явного закрытия сессии
+        def close(self):
+            print("Session closed")
+            self.session.close()        self.session.close()    def __del__(self):
+                 
