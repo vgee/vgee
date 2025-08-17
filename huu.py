@@ -1,6 +1,8 @@
 import typing
 import requests
 import aiogram  # type: ignore
+import tkinter as tk
+from tkinter import messagebox
 
 
 class Bot:
@@ -46,3 +48,31 @@ class Bot:
 
     def __del__(self):
         self.close()
+
+
+def send():
+    chat_id = entry_chat.get()
+    text = entry_text.get()
+    try:
+        bot.send_message(int(chat_id), text)
+        messagebox.showinfo("Успех", "Сообщение отправлено!")
+    except Exception as e:
+        messagebox.showerror("Ошибка", str(e))
+
+
+bot = Bot(token="ВАШ_ТОКЕН")  # Замените на ваш токен
+
+root = tk.Tk()
+root.title("Telegram Bot UI")
+
+tk.Label(root, text="Chat ID:").pack()
+entry_chat = tk.Entry(root)
+entry_chat.pack()
+
+tk.Label(root, text="Текст сообщения:").pack()
+entry_text = tk.Entry(root)
+entry_text.pack()
+
+tk.Button(root, text="Отправить", command=send).pack()
+
+root.mainloop()
