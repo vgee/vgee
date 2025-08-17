@@ -1,19 +1,40 @@
 version: "1.0"
+
 linter: jetbrains/qodana-python:2024.2
+
 profile:
-  name: qodana.recommended
+  name: qodana.strict # более строгий профиль для максимального покрытия
+
 include:
   - name: CheckDependencyLicenses
-dotnet: {}
-hardcodedPasswords:
-enablePackageSearch: false
-plugins: []
-failOnErrorNotification: false
-dot-net:
+  - name: DuplicatedCode
+  - name: SecurityCodeScan # для .NET проектов
+  - name: VulnerableDependencies # проверка уязвимых пакетов
+
+dotnet:
   solution: "path/to/solution.sln"
-php: {}
+  configuration: "Release"
+
+php:
+  phpVersion: "8.2"
+
+hardcodedPasswords:
+  enabled: true # явное включение проверки на захардкоженные пароли
+
+enablePackageSearch: true # проверка зависимостей на уязвимости и обновления
+
+plugins: []
+
+failOnErrorNotification: false
+
 properties:
-  analyzeDevDependencies: "false"
+  analyzeDevDependencies: "false" # можно поставить true, чтобы проверять dev-зависимости
   enableCodeAnalysis: "true"
-  maxIssues: "500"
-  reportFormat: "html"
+  maxIssues: "2000" # увеличен лимит, чтобы не обрезать отчёт на старте
+  reportFormat: "html,json" # добавлен JSON для интеграций с CI/CD
+  failThreshold: "High" # билд падает только на критических проблемах
+  runDuplicatedCodeInspection: "true"
+  cyclomaticComplexityLimit: "15" # лимит сложности для функций/методов
+
+baseline:
+  path: qodana.sarif.json # чтобы отслеживать только новые проблемы
