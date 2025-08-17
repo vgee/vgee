@@ -21,7 +21,12 @@ import aiogram  # type: ignore # добавлен импорт aiogram
                 self.default = self.default.id
             elif not isinstance(self.default, int):
                 raise ValueError("default must be aiogram.types.Chat or int")
-
+        self.allow_interactive = allow_interactive
+        self.session = requests.Session()  # создаем сессию requests        
+        self.session.headers.update({
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+            "Content-Type": "application/json"
+        })
 
 # noinspection PyUnreachableCode
 class Bot:
