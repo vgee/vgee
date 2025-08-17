@@ -3,6 +3,10 @@ import requests
 import aiogram  # type: ignore
 import tkinter as tk
 from tkinter import messagebox
+import logging
+
+# Настройка логирования
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class Bot:
@@ -38,9 +42,13 @@ class Bot:
             "chat_id": chat_id,
             "text": text
         }
-        response = self.session.post(url, json=payload)
-        if response.status_code != 200:
-            raise Exception(f"Failed to send message: {response.text}")
+        try:
+            response = self.session.post(url, json=payload)
+            response.raise_for_status()  # Проверка на HTTP ошибки
+            logging.info(f"Сообщение отправлено в чат {chat_id}: {text}")
+        except requests.exceptions.RequestException as e:
+            logging.error(f"Ошибка при отправке сообщения в чат {chat_id}: {e}")
+            raise
 
     def close(self):
         print("Session closed")
@@ -50,29 +58,62 @@ class Bot:
         self.close()
 
 
-def send():
-    chat_id = entry_chat.get()
-    text = entry_text.get()
-    try:
-        bot.send_message(int(chat_id), text)
-        messagebox.showinfo("Успех", "Сообщение отправлено!")
-    except Exception as e:
-        messagebox.showerror("Ошибка", str(e))
+def run_ui(bot: Bot):
+    def send():
+        chat_id = entry_chat.get()
+        text = entry_text.get()
+        try:
+            bot.send_message(int(chat_id), text)
+            messagebox.showinfo("Успех", "Сообщение отправлено!")
+        except Exception as e:
+            messagebox.showerror("Ошибка", str(e))
+
+    root = tk.Tk()
+    root.title("Telegram Bot UI")
+
+    tk.Label(root, text="Chat ID:").pack()
+    entry_chat = tk.Entry(root)
+    entry_chat.pack()
+
+    tk.Label(root, text="Текст сообщения:").pack()
+    entry_text = tk.Entry(root)
+    entry_text.pack()
+
+    tk.Button(root, text="Отправить", command=send).pack()
+
+    root.mainloop()
 
 
-bot = Bot(token="ВАШ_ТОКЕН")  # Замените на ваш токен
+def run_console(bot: Bot):
+    while True:
+        chat_id = input("Введите Chat ID (или 'exit' для выхода): ")
+        if chat_id.lower() == "exit":
+            break
+        try:
+            chat_id = int(chat_id)
+        except ValueError:
+            print("Ошибка: Chat ID должен быть целым числом.")
+            continue
+        text = input("Введите текст сообщения: ")
+        try:
+            bot.send_message(chat_id, text)
+            print("Сообщение отправлено!")
+        except Exception as e:
+            print(f"Ошибка: {e}")   print(f"Ошибка: {e}")
 
-root = tk.Tk()
-root.title("Telegram Bot UI")
 
-tk.Label(root, text="Chat ID:").pack()
-entry_chat = tk.Entry(root)
-entry_chat.pack()
 
-tk.Label(root, text="Текст сообщения:").pack()
-entry_text = tk.Entry(root)
-entry_text.pack()
 
-tk.Button(root, text="Отправить", command=send).pack()
 
-root.mainloop()
+
+
+
+
+
+        run_console(bot)    else:        run_ui(bot)    if mode == "ui":    mode = input("Выберите режим (ui/console): ").strip().lower()    bot = Bot(token="ВАШ_ТОКЕН")  # Замените на ваш токенif __name__ == "__main__":if __name__ == "__main__":
+    bot = Bot(token="ВАШ_ТОКЕН")  # Замените на ваш токен
+    mode = input("Выберите режим (ui/console): ").strip().lower()
+    if mode == "ui":
+        run_ui(bot)
+    else:
+        run_console(bot)
