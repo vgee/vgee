@@ -21,7 +21,12 @@ import aiogram  # type: ignore # добавлен импорт aiogram
                 self.default = self.default.id
             elif not isinstance(self.default, int):
                 raise ValueError("default must be aiogram.types.Chat or int")
-
+        self.allow_interactive = allow_interactive
+        self.session = requests.Session()  # создаем сессию requests        
+        self.session.headers.update({
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+            "Content-Type": "application/json"
+        })
 
 # noinspection PyUnreachableCode
 class Bot:
@@ -113,14 +118,8 @@ class Bot:
             "text": text
         }
         if response.status_code != 200:
-
-bot = Bot(token="my_token")  # создаем экземпляр Bot
-        response: requests.Response = self.session.post(url, json=payload)
-        if response.status_code != 200:
             raise Exception(f"Failed to send message: {response.text}")  # отправляем POST запрос       
-        return bot
-    def __del__(self):      # метод для явного закрытия сессии
-        def close(self):
-            print("Session closed")
-            self.session.close()        self.session.close()    def __del__(self):
+
+# создаем экземпляр Bot вне класса
+bot = Bot(token="my_token")
                  
