@@ -43,7 +43,7 @@ class Bot:
             "text": text
         }
         try:
-            response = self.session.post(url, json=payload)
+            response = self.session.post(url, json=payload) # type: ignore
             response.raise_for_status()  # Проверка на HTTP ошибки
             logging.info(f"Сообщение отправлено в чат {chat_id}: {text}")
         except requests.exceptions.RequestException as e:

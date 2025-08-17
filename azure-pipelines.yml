@@ -32,6 +32,12 @@ steps:
   displayName: 'Install dependencies'
 
 - script: |
+    pip install flake8 black
+    flake8 .
+    black --check .
+  displayName: 'Linting and Formatting'
+
+- script: |
     pip install pytest pytest-azurepipelines
     pytest
   displayName: 'pytest'
