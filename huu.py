@@ -38,7 +38,7 @@ class Bot:
 
     def send_message(self, chat_id: int, text: str) -> None:
         url = f"https://api.telegram.org/bot{self.token}/sendMessage"
-        payload = {
+        payload: dict[str, typing.Union[int, str]] = {
             "chat_id": chat_id,
             "text": text
         }
@@ -99,18 +99,10 @@ def run_console(bot: Bot):
             bot.send_message(chat_id, text)
             print("Сообщение отправлено!")
         except Exception as e:
-            print(f"Ошибка: {e}")   print(f"Ошибка: {e}")
+            print(f"Ошибка: {e}")
 
 
-
-
-
-
-
-
-
-
-        run_console(bot)    else:        run_ui(bot)    if mode == "ui":    mode = input("Выберите режим (ui/console): ").strip().lower()    bot = Bot(token="ВАШ_ТОКЕН")  # Замените на ваш токенif __name__ == "__main__":if __name__ == "__main__":
+if __name__ == "__main__":
     bot = Bot(token="ВАШ_ТОКЕН")  # Замените на ваш токен
     mode = input("Выберите режим (ui/console): ").strip().lower()
     if mode == "ui":
