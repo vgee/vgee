@@ -13,10 +13,10 @@ include:
 
 dotnet:
   solution: "path/to/solution.sln"
-  configuration: "Release"
+configuration: "Release"
 
 php:
-  phpVersion: "8.2"
+  version: "8.2"
 
 hardcodedPasswords:
   enabled: true # явное включение проверки на захардкоженные пароли
