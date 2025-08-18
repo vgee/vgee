@@ -55,6 +55,9 @@ class Bot:
         self.session.close()
 
     def __del__(self):
+        self.new_method()
+
+    def new_method(self):
         self.close()
 
 
