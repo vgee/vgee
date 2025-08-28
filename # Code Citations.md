@@ -1,254 +1,125 @@
 # Code Citations
 
-## License: BSD-3-Clause
-https://github.com/refnx/refnx/blob/b407b80af82302bfe4ef788a7f9fd4cb409a13dc/azure-pipelines.yml.bak
+Этот документ содержит ссылки на исходный код, использованный в проекте, с указанием лицензий и примеров кода.
 
-```
-`yaml
-# Python package
+---
 
-```
+## Источники с лицензией MIT
 
-
-## License: Apache-2.0
-https://github.com/cryptaliagy/krait/blob/d1dbf96dedf2eb1c306cd40dec2b56cadc57d145/src/krait/templates/azure-azure-pipeline.yml.jinja2
-
-```
-`yaml
-# Python package
-
+### 1. [pythecamp.py](https://github.com/youngminz/pythecamp/tree/1dbb65c2bc8e726efffd767fccbba9ff0332ba55/pythecamp/pythecamp.py)
+**Лицензия:** MIT  
+**Пример кода:**
+```python
+() -> requests.Session:
+    session = requests.Session()
+    session.headers.update({
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko"
+    })
 ```
 
+---
 
-## License: GPL-3.0
-https://github.com/StephenRoille/project-9de3c634ca/blob/174c643f4ab83b5fc8a6b9a1b1296daa03b74fdd/README.md
-
-```
-`yaml
-# Python package
-
-```
-
-
-## License: BSD-3-Clause
-https://github.com/refnx/refnx/blob/b407b80af82302bfe4ef788a7f9fd4cb409a13dc/azure-pipelines.yml.bak
-
-```
-`yaml
-# Python package
-# Create and test a Python package on multiple Python versions.
-# Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/python
-
-trigger:
-- main
-
-pool:
-  vmImage: ubuntu-latest
-
-strategy:
-  matrix:
-    Python38:
-      python.version: '3.8'
-    Python39:
-      python.version: '3.9'
-    Python310:
-      python.version: '3.10'
-    Python311:
-      python.version: '3.11'
-
-steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '$(python.version)'
-  displayName: 'Use Python $(python.version)'
-
-- script: |
-    python -m pip install --upgrade pip
-    pip install -r requirements.txt
-  displayName: 'Install dependencies'
-
-- script: |
-    pip install flake8 black
-    flake8 .
-    black --check .
-  displayName: 'Linting and Formatting'
-
-- script: |
-    pip install pytest pytest-azurepipelines
-    pytest
-  displayName: 'pytest'
+### 2. [WPUserFinder](https://github.com/iNeerajSihag/WPUserFinder/tree/de30e444b58c6d1e4db8675f7d413ae93951ca54/main.py)
+**Лицензия:** MIT  
+**Пример кода:**
+```python
+requests.Session()
+session.headers.update({
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110
+})
 ```
 
+---
 
-## License: Apache-2.0
-https://github.com/cryptaliagy/krait/blob/d1dbf96dedf2eb1c306cd40dec2b56cadc57d145/src/krait/templates/azure-azure-pipeline.yml.jinja2
+### 3. [update-clash-resources](https://github.com/JohanChane/update-clash-resources/tree/499f285b6b31217c287affa0be34b8fd62c75b8e/clashcfgutil.py)
+**Лицензия:** MIT  
+**Пример кода:**
+```python
+Session()
+session.headers.update({
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/
+})
+```
+
+---
+
+## Источники с неизвестной лицензией
+
+### 1. [get_article](https://github.com/mttias/get_article/tree/fde6c7687c05b46703e9966586ec27bf2093954b/getPage.py)
+**Лицензия:** неизвестно  
+**Пример кода:**
+```python
+.update({
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+})
+```
+
+---
+
+### 2. [Python_100DaysOfCodeChallenge](https://github.com/AbdulNasir-NuZ/Python_100DaysOfCodeChallenge/tree/f1d00d3831f15487d8c6995c2de6aa2255ba02ca/Day_89-Requests-Module/tutorial/Tutorial.md)
+**Лицензия:** неизвестно  
+**Пример кода:**
+```python
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+"Content-Type": "application/json"
+```
+
+---
+
+## Рекомендации
+
+1. **Проверка лицензий:** Убедитесь, что использование кода с неизвестной лицензией соответствует требованиям вашего проекта.
+2. **Унификация заголовков:** Если вы используете эти примеры кода, рассмотрите возможность создания единого метода для настройки `requests.Session` с заголовками.
+3. **Документация:** Добавьте ссылки на этот файл в README.md вашего проекта для прозрачности.
+# Code Citations
+
+## License: MIT
+https://github.com/youngminz/pythecamp/tree/1dbb65c2bc8e726efffd767fccbba9ff0332ba55/pythecamp/pythecamp.py
 
 ```
-`yaml
-# Python package
-# Create and test a Python package on multiple Python versions.
-# Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/python
-
-trigger:
-- main
-
-pool:
-  vmImage: ubuntu-latest
-
-strategy:
-  matrix:
-    Python38:
-      python.version: '3.8'
-    Python39:
-      python.version: '3.9'
-    Python310:
-      python.version: '3.10'
-    Python311:
-      python.version: '3.11'
-
-steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '$(python.version)'
-  displayName: 'Use Python $(python.version)'
-
-- script: |
-    python -m pip install --upgrade pip
-    pip install -r requirements.txt
-  displayName: 'Install dependencies'
-
-- script: |
-    pip install flake8 black
-    flake8 .
-    black --check .
-  displayName: 'Linting and Formatting'
-
-- script: |
-    pip install pytest pytest-azurepipelines
-    pytest
-  displayName: 'pytest'
+() -> requests.Session:
+        session = requests.Session()
+        session.headers.update({
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko
 ```
 
 
-## License: GPL-3.0
-https://github.com/StephenRoille/project-9de3c634ca/blob/174c643f4ab83b5fc8a6b9a1b1296daa03b74fdd/README.md
+## License: MIT
+https://github.com/iNeerajSihag/WPUserFinder/tree/de30e444b58c6d1e4db8675f7d413ae93951ca54/main.py
 
 ```
-`yaml
-# Python package
-# Create and test a Python package on multiple Python versions.
-# Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/python
+requests.Session()
+        session.headers.update({
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110
+```
 
-trigger:
-- main
 
-pool:
-  vmImage: ubuntu-latest
+## License: MIT
+https://github.com/JohanChane/update-clash-resources/tree/499f285b6b31217c287affa0be34b8fd62c75b8e/clashcfgutil.py
 
-strategy:
-  matrix:
-    Python38:
-      python.version: '3.8'
-    Python39:
-      python.version: '3.9'
-    Python310:
-      python.version: '3.10'
-    Python311:
-      python.version: '3.11'
-
-steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '$(python.version)'
-  displayName: 'Use Python $(python.version)'
-
-- script: |
-    python -m pip install --upgrade pip
-    pip install -r requirements.txt
-  displayName: 'Install dependencies'
-
-- script: |
-    pip install flake8 black
-    flake8 .
-    black --check .
-  displayName: 'Linting and Formatting'
-
-- script: |
-    pip install pytest pytest-azurepipelines
-    pytest
-  displayName: 'pytest'
+```
+Session()
+        session.headers.update({
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/
 ```
 
 
 ## License: неизвестно
-https://github.com/BeardedPlatypus/personal-website-content/blob/013c0f51fee43b2f5065f92255f2c3b6e1f37523/articles/on-ci-static-website.md
+https://github.com/mttias/get_article/tree/fde6c7687c05b46703e9966586ec27bf2093954b/getPage.py
 
 ```
-latest
-
-strategy:
-  matrix:
-    Python38:
-      python.version:
+.update({
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+            "
 ```
 
 
 ## License: неизвестно
-https://github.com/hiryamada/notes/blob/dfd3465fb1552b051c9668b64951b83a73eff25d/AZ-400/mod06-hands-on-multiple-jobs.md
+https://github.com/AbdulNasir-NuZ/Python_100DaysOfCodeChallenge/tree/f1d00d3831f15487d8c6995c2de6aa2255ba02ca/Day_89-Requests-Module/tutorial/Tutorial.md
 
 ```
-latest
-
-strategy:
-  matrix:
-    Python38:
-      python.version:
-```
-
-
-## License: неизвестно
-https://github.com/BeardedPlatypus/personal-website-content/blob/013c0f51fee43b2f5065f92255f2c3b6e1f37523/articles/on-ci-static-website.md
-
-```
-latest
-
-strategy:
-  matrix:
-    Python38:
-      python.version: '3.8'
-    Python39:
-      python.version: '3.9'
-    Python310:
-      python.version: '3.10'
-    Python311:
-      python.version: '3.11'
-
-steps:
-
-```
-
-
-## License: неизвестно
-https://github.com/hiryamada/notes/blob/dfd3465fb1552b051c9668b64951b83a73eff25d/AZ-400/mod06-hands-on-multiple-jobs.md
-
-```
-latest
-
-strategy:
-  matrix:
-    Python38:
-      python.version: '3.8'
-    Python39:
-      python.version: '3.9'
-    Python310:
-      python.version: '3.10'
-    Python311:
-      python.version: '3.11'
-
-steps:
-
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+            "Content-Type": "application/json"
+        }
 ```
 
