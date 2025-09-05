@@ -33,8 +33,7 @@ class Bot:
             return None
         if isinstance(default, aiogram.types.Chat):
             return default.id
-        if isinstance(default, int):
-            return default
+        return default
         raise ValueError("default must be aiogram.types.Chat or int")
 
     @staticmethod
@@ -48,7 +47,7 @@ class Bot:
 
     def send_message(self, chat_id: int, text: str) -> None:
         url = f"https://api.telegram.org/bot{self.token}/sendMessage"
-        payload = {
+        payload: dict[str, str | int] = {
             "chat_id": chat_id,
             "text": text
         }
