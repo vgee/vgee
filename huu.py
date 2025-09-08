@@ -23,27 +23,9 @@ class Bot:
             else:
                 raise ValueError("Token must be provided if interactive input is not allowed")
         self.token = token
-        self.default = self._validate_default(default)
+        self.default = _validate_default(default)
         self.allow_interactive = allow_interactive
-        self.session = self._initialize_session()
-
-    @staticmethod
-    def _validate_default(default: typing.Optional[typing.Union[int, aiogram.types.Chat]]) -> typing.Optional[int]:
-        if default is None:
-            return None
-        if isinstance(default, aiogram.types.Chat):
-            return default.id
-        return default
-        raise ValueError("default must be aiogram.types.Chat or int")
-
-    @staticmethod
-    def _initialize_session() -> requests.Session:
-        session = requests.Session()
-        session.headers.update({
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
-            "Content-Type": "application/json"
-        })
-        return session
+        self.session = _initialize_session()
 
     def send_message(self, chat_id: int, text: str) -> None:
         url = f"https://api.telegram.org/bot{self.token}/sendMessage"
@@ -65,6 +47,24 @@ class Bot:
 
     def __del__(self) -> None:
         self.close()
+
+
+def _initialize_session() -> requests.Session:
+    session = requests.Session()
+    session.headers.update({
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+        "Content-Type": "application/json"
+    })
+    return session
+
+
+def _validate_default(default: typing.Optional[typing.Union[int, aiogram.types.Chat]]) -> typing.Optional[int]:
+    if default is None:
+        return None
+    if isinstance(default, aiogram.types.Chat):
+        return default.id
+    return default
+    raise ValueError("default must be aiogram.types.Chat or int")
 
 
 def run_ui(bot: Bot) -> None:
