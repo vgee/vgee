@@ -5,6 +5,7 @@ VGEE (Very Good Example Environment) is a sample project to demonstrate various 
 ## Installation
 
 To install the required dependencies, run:
+
 ```sh
 pip install -r requirements.txt
 ```
@@ -12,7 +13,8 @@ pip install -r requirements.txt
 ## Usage
 
 1. Clone the repository:
-    ```sh
+
+```sh
     git clone https://github.com/yourusername/vgee.git
     ```
 2. Navigate to the project directory:
