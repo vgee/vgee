@@ -17,7 +17,7 @@
     session.headers.update({
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko"
     })
-```
+```text
 
 ---
 
@@ -31,7 +31,7 @@ requests.Session()
 session.headers.update({
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110
 })
-```
+```text
 
 ---
 
@@ -45,7 +45,7 @@ Session()
 session.headers.update({
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/
 })
-```
+```text
 
 ---
 
@@ -82,20 +82,20 @@ Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)
 2. **Унификация заголовков:** Если вы используете эти примеры кода, рассмотрите возможность создания единого метода для настройки `requests.Session` с заголовками.
 3. **Документация:** Добавьте ссылки на этот файл в README.md вашего проекта для прозрачности.
 
-## Code Citations
+## Additional Code Citations
 
-## License: MIT
+## License: MIT (pythecamp.py)
 
 <https://github.com/youngminz/pythecamp/tree/1dbb65c2bc8e726efffd767fccbba9ff0332ba55/pythecamp/pythecamp.py>
 
-```
+```python
 () -> requests.Session:
         session = requests.Session()
         session.headers.update({
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko
 ```
 
-## License: MIT
+## License: MIT (WPUserFinder)
 
 <https://github.com/iNeerajSihag/WPUserFinder/tree/de30e444b58c6d1e4db8675f7d413ae93951ca54/main.py>
 
@@ -105,7 +105,7 @@ requests.Session()
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110
 ```
 
-## License: MIT
+## License: MIT (update-clash-resources)
 
 <https://github.com/JohanChane/update-clash-resources/tree/499f285b6b31217c287affa0be34b8fd62c75b8e/clashcfgutil.py>
 
