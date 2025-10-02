@@ -30,7 +30,7 @@ python main.py
 
 Информация о лицензии проекта.
 
-# Contributor Covenant Code of Conduct
+## Contributor Covenant Code of Conduct
 
 ## Our Pledge
 
