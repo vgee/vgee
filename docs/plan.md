@@ -7,9 +7,10 @@ This document outlines a comprehensive improvement plan for the VGEE (Very Good 
 ## Code Structure and Organization
 
 ### Current State
+
 The project currently has a simple structure with a few Python files (main.py, huu.py, config.py) and test files. The Bot class in huu.py contains the core functionality, while config.py provides configuration settings.
 
-### Proposed Improvements
+### Proposed Improvements (Code Structure and Organization)
 
 1. **Reorganize Project Structure**
    - **Rationale**: A more organized structure will improve maintainability and scalability.
@@ -27,10 +28,11 @@ The project currently has a simple structure with a few Python files (main.py, h
 
 ## Code Quality and Standards
 
-### Current State
+### Current State (Code Quality and Standards)
+
 The code includes some typing annotations and follows basic Python conventions, but there are inconsistencies and areas for improvement.
 
-### Proposed Improvements
+### Proposed Improvements (Testing and QA)
 
 1. **Enhance Type Annotations**
    - **Rationale**: Comprehensive type annotations improve code reliability and developer experience.
@@ -65,10 +67,11 @@ The code includes some typing annotations and follows basic Python conventions, 
 
 ## Bot Functionality
 
-### Current State
+### Current State (Bot Functionality)
+
 The Bot class provides basic functionality for token management and session handling, but lacks advanced features.
 
-### Proposed Improvements
+### Proposed Improvements (Bot Functionality)
 
 1. **Enhance Bot Capabilities**
    - **Rationale**: Additional features will make the bot more useful and demonstrate more coding practices.
@@ -93,10 +96,11 @@ The Bot class provides basic functionality for token management and session hand
 
 ## Configuration System
 
-### Current State
+### Current State (Configuration System)
+
 The configuration system uses environment variables with default values, but lacks flexibility and validation.
 
-### Proposed Improvements
+### Proposed Improvements (Configuration System)
 
 1. **Enhance Configuration System**
    - **Rationale**: A more robust configuration system will improve flexibility and ease of use.
@@ -114,10 +118,11 @@ The configuration system uses environment variables with default values, but lac
 
 ## Testing and Quality Assurance
 
-### Current State
+### Current State (Testing and Quality Assurance)
+
 The project has basic unit tests for the Bot and Config classes, but lacks comprehensive test coverage and advanced testing techniques.
 
-### Proposed Improvements
+### Proposed Improvements (Testing and Quality Assurance)
 
 1. **Expand Test Coverage**
    - **Rationale**: Comprehensive test coverage ensures reliability and prevents regressions.
@@ -142,7 +147,8 @@ The project has basic unit tests for the Bot and Config classes, but lacks compr
 
 ## Documentation
 
-### Current State
+### Current State (Documentation)
+
 The project has basic documentation in README.md and CONTRIBUTING.md, but lacks comprehensive API documentation and usage examples.
 
 ### Proposed Improvements
@@ -170,10 +176,11 @@ The project has basic documentation in README.md and CONTRIBUTING.md, but lacks 
 
 ## Deployment and Operations
 
-### Current State
+### Current State (Deployment and Operations)
+
 The project includes a Dockerfile and docker-compose.yml, but lacks comprehensive deployment documentation and operational tools.
 
-### Proposed Improvements
+### Deployment Proposed Improvements
 
 1. **Enhance Containerization**
    - **Rationale**: Improved containerization simplifies deployment and ensures consistency.
