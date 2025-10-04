@@ -24,7 +24,7 @@ class Bot:
                 raise ValueError("Token must be provided if interactive input is not allowed")
         self.token = token
         self.default = _validate_default(default)
-        self.allow_interactive = allow_interactive
+        self.allow_interactive = allow_interactiv
         self.session = _initialize_session()
 
     def send_message(self, chat_id: int, text: str) -> None:
