@@ -13,7 +13,7 @@ class Bot:
     def __init__(
         self,
         token: typing.Optional[str] = None,
-        default: typing.Optional[typing.Union[int, aiogram.types.Chat]] = None,
+        default: typing.Optional[typing.Union[int, object]] = None,
         allow_interactive: bool = True,
         **kwargs: object
     ) -> None:
@@ -24,7 +24,7 @@ class Bot:
                 raise ValueError("Token must be provided if interactive input is not allowed")
         self.token = token
         self.default = _validate_default(default)
-        self.allow_interactive = allow_interactiv
+        self.allow_interactive = allow_interactive
         self.session = _initialize_session()
 
     def send_message(self, chat_id: int, text: str) -> None:
@@ -58,13 +58,16 @@ def _initialize_session() -> requests.Session:
     return session
 
 
-def _validate_default(default: typing.Optional[typing.Union[int, aiogram.types.Chat]]) -> typing.Optional[int]:
+def _validate_default(default: typing.Optional[typing.Union[int, object]]) -> typing.Optional[int]:
     if default is None:
         return None
-    if isinstance(default, aiogram.types.Chat):
-        return default.id
-    return default
-    raise ValueError("default must be aiogram.types.Chat or int")
+    # If it's an int, return it directly.
+    if isinstance(default, int):
+        return default
+    # Duck-typing: accept any object that has an integer 'id' attribute (e.g., aiogram.types.Chat).
+    if hasattr(default, "id") and isinstance(getattr(default, "id"), int):
+        return int(getattr(default, "id"))
+    raise ValueError("default must be an int or an object with an integer 'id' attribute")
 
 
 def run_ui(bot: Bot) -> None:
