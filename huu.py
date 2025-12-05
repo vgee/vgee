@@ -178,7 +178,8 @@ if __name__ == "__main__":
         else:
             print("Ошибка: Неверный режим. Используйте 'ui' или 'console'.")
     except Exception as e:
-        logging.error(f"Ошибка при запуске программы: {e}")import logging
+        logging.error(f"Ошибка при запуске программы: {e}")except Exception as e:
+                logging.error(f"Ошибка при запуске программы: {e}")import logging
 import tkinter as tk
 import typing
 from tkinter import messagebox
