@@ -74,7 +74,6 @@ def _validate_default(default: typing.Optional[typing.Union[int, object]]) -> ty
         return int(getattr(default, "id"))
     raise ValueError("default must be an int or an object with an integer 'id' attribute")
 
-
 def run_ui(bot: Bot) -> None:
     def send() -> None:
         chat_id = entry_chat.get().strip()
