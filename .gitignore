@@ -363,7 +363,6 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Игнорировать файлы и директории, созданные Python
-__pycache__/
 *.py[cod]
 *$py.class
 
