@@ -4,7 +4,7 @@ import tkinter as tk
 import typing
 from tkinter import messagebox
 
-import requests
+import requests # type: ignore
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
