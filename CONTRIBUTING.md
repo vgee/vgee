@@ -15,16 +15,21 @@ Thank you for your interest in contributing to the VGEE project! This document p
 
 1. **Fork the repository** on GitHub
 2. **Clone your fork** locally:
+
    ```bash
    git clone https://github.com/yourusername/vgee.git
    cd vgee
    ```
+
 3. **Create a virtual environment** (optional but recommended):
+
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
+
 4. **Install dependencies**:
+
    ```bash
    pip install -r requirements.txt
    ```
@@ -34,6 +39,7 @@ Thank you for your interest in contributing to the VGEE project! This document p
 ### Creating a Feature Branch
 
 1. Create a new branch for your feature or bugfix:
+
    ```bash
    git checkout -b feature-name
    ```
@@ -41,16 +47,19 @@ Thank you for your interest in contributing to the VGEE project! This document p
 2. Make your changes to the code
 
 3. Run tests to ensure nothing is broken:
+
    ```bash
    pytest
    ```
 
 4. Commit your changes with descriptive messages:
+
    ```bash
    git commit -m "Add feature: description of changes"
    ```
 
 5. Push to your fork:
+
    ```bash
    git push origin feature-name
    ```
@@ -171,6 +180,7 @@ Use a clear, descriptive PR title:
 - ❌ Bad: "Fix bug" or "Update code"
 
 Include a detailed description:
+
 ```markdown
 ## Description
 Brief explanation of what this PR does.
@@ -202,6 +212,7 @@ All 30+ tests pass. Added 5 new tests for user retrieval.
 ### Import Errors
 
 If you see import errors, ensure all dependencies are installed:
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -217,6 +228,7 @@ If tests fail:
 ### Type Checking
 
 For type checking, you can use `mypy`:
+
 ```bash
 pip install mypy
 mypy huu.py
