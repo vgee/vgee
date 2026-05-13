@@ -58,6 +58,45 @@ class Bot:
             logging.error(f"Ошибка при отправке сообщения в чат {chat_int}: {e}")
             raise
 
+    def get_chat(self, chat_id: typing.Optional[typing.Union[int, str]], *, timeout: float = 10.0) -> dict[str, typing.Any]:
+        """
+        Получает информацию о чате. Если chat_id не передан, используется self.default.
+        Возвращает словарь с информацией о чате.
+        """
+        actual = chat_id if chat_id is not None and str(chat_id).strip() != "" else self.default
+        if actual is None:
+            raise ValueError("Chat ID must be provided either as argument or as Bot.default")
+        try:
+            chat_int = int(actual)
+        except (TypeError, ValueError):
+            raise ValueError("Chat ID должен быть числом")
+
+        url = f"https://api.telegram.org/bot{self.token}/getChat"
+        payload: dict[str, int] = {"chat_id": chat_int}
+        try:
+            response = self.session.get(url, params=payload, timeout=timeout)
+            response.raise_for_status()
+            data = response.json()
+            if not data.get("ok"):
+                raise ValueError(f"Telegram API error: {data.get('description', 'Unknown error')}")
+            logging.info(f"Информация о чате {chat_int} получена")
+            return data.get("result", {})
+        except requests.exceptions.RequestException as e:
+            logging.error(f"Ошибка при получении информации о чате {chat_int}: {e}")
+            raise
+
+    def get_user(self, user_id: typing.Union[int, str], *, timeout: float = 10.0) -> dict[str, typing.Any]:
+        """
+        Получает информацию о пользователе через getChat (работает для приватных чатов).
+        Возвращает словарь с информацией о пользователе.
+        """
+        try:
+            user_int = int(user_id)
+        except (TypeError, ValueError):
+            raise ValueError("User ID должен быть числом")
+
+        return self.get_chat(user_int, timeout=timeout)
+
     def close(self) -> None:
         if getattr(self, "session", None) is not None:
             logging.info("Закрытие сессии")

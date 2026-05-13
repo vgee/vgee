@@ -119,5 +119,71 @@ class TestBot(unittest.TestCase):
         huu.run_console(bot)
         bot.send_message.assert_called_once_with(123, 'hello')
 
+    @patch('huu.requests.Session')
+    def test_get_chat_success(self, mock_session_cls):
+        mock_session = MagicMock()
+        mock_response = MagicMock()
+        mock_response.json.return_value = {
+            "ok": True,
+            "result": {
+                "id": 123,
+                "type": "private",
+                "first_name": "John",
+                "username": "johndoe"
+            }
+        }
+        mock_session.get.return_value = mock_response
+        mock_session_cls.return_value = mock_session
+
+        bot = huu.Bot(token='token', allow_interactive=False)
+        bot.session = mock_session
+        chat_info = bot.get_chat(123)
+        
+        self.assertEqual(chat_info["id"], 123)
+        self.assertEqual(chat_info["type"], "private")
+        self.assertEqual(chat_info["first_name"], "John")
+        mock_session.get.assert_called_once()
+
+    @patch('huu.requests.Session')
+    def test_get_chat_api_error(self, mock_session_cls):
+        mock_session = MagicMock()
+        mock_response = MagicMock()
+        mock_response.json.return_value = {
+            "ok": False,
+            "description": "Chat not found"
+        }
+        mock_session.get.return_value = mock_response
+        mock_session_cls.return_value = mock_session
+
+        bot = huu.Bot(token='token', allow_interactive=False)
+        bot.session = mock_session
+        
+        with self.assertRaises(ValueError):
+            bot.get_chat(999)
+
+    @patch('huu.requests.Session')
+    def test_get_user_success(self, mock_session_cls):
+        mock_session = MagicMock()
+        mock_response = MagicMock()
+        mock_response.json.return_value = {
+            "ok": True,
+            "result": {
+                "id": 456,
+                "is_bot": False,
+                "first_name": "Jane",
+                "username": "janedoe"
+            }
+        }
+        mock_session.get.return_value = mock_response
+        mock_session_cls.return_value = mock_session
+
+        bot = huu.Bot(token='token', allow_interactive=False)
+        bot.session = mock_session
+        user_info = bot.get_user(456)
+        
+        self.assertEqual(user_info["id"], 456)
+        self.assertEqual(user_info["is_bot"], False)
+        self.assertEqual(user_info["first_name"], "Jane")
+
 if __name__ == '__main__':
     unittest.main()
