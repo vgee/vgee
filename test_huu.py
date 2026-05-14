@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
 import huu
-import requests
+import requests # type: ignore
 
 class TestValidation(unittest.TestCase):
     def test_validate_token_empty(self):
