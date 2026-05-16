@@ -1,6 +1,6 @@
 # VGEE Project
 
-VGEE (Very Good Example Environment) is a sample project to demonstrate various coding practices and testing strategies. It includes a Telegram bot HTTP client with comprehensive input validation, error handling, and testing.
+VGEE (Very Good Example Environment) is a sample project to demonstrate various coding practices and testing strategies. It includes a Telegram bot HTTP client with comprehensive input validation, error handling, automatic retry logic, and testing.
 
 ## Table of Contents
 
@@ -10,6 +10,7 @@ VGEE (Very Good Example Environment) is a sample project to demonstrate various 
 - [Usage](#usage)
   - [Core Methods](#core-methods)
   - [Input Validation](#input-validation)
+  - [Retry Logic](#retry-logic)
   - [UI/Console Modes](#uiconsole-modes)
 - [Project Structure](#project-structure)
 - [Testing](#testing)
@@ -20,9 +21,10 @@ VGEE (Very Good Example Environment) is a sample project to demonstrate various 
 
 - **Telegram Bot Client** - HTTP-based client for sending messages and retrieving chat/user information
 - **Input Validation** - Comprehensive validation for tokens, chat IDs, messages, and timeouts
+- **Automatic Retry Logic** - Exponential backoff retry mechanism for resilient API calls
 - **Multiple Interfaces** - Console and GUI (tkinter) modes for interacting with the bot
 - **Context Manager Support** - Proper resource management with context managers
-- **Extensive Testing** - 30+ unit tests covering core functionality and edge cases
+- **Extensive Testing** - 50+ unit tests covering core functionality and edge cases
 - **Type Hints** - Full type annotations for better IDE support and code clarity
 - **Logging** - Detailed logging for debugging and monitoring
 
@@ -152,6 +154,54 @@ bot.send_message(0, "test")              # Chat ID cannot be zero
 bot.send_message(123, "")                # Message cannot be empty
 bot.send_message(123, "x" * 5000)        # Message too long
 bot.send_message(123, "test", timeout=500) # Timeout too large
+```
+
+### Retry Logic
+
+The bot includes automatic retry logic with exponential backoff to handle transient network issues:
+
+**Default Retry Behavior:**
+- Maximum 3 retry attempts
+- Initial delay: 0.5 seconds
+- Exponential backoff multiplier: 2.0x
+- Automatic retry on: timeouts, connection errors, and HTTP 429/5xx errors
+
+**Retryable Errors:**
+- `requests.exceptions.Timeout` - Connection or read timeout
+- `requests.exceptions.ConnectionError` - Network connectivity issues
+- HTTP Status 429 (Too Many Requests)
+- HTTP Status 500-504 (Server errors)
+
+**Non-Retryable Errors:**
+- HTTP Status 400-403 (Client errors like invalid token)
+- JSON decode errors
+- `ValidationError` (input validation failures)
+
+**Customizing Retry Behavior:**
+
+```python
+from retry import RetryConfig
+
+# Create custom retry configuration
+retry_config = RetryConfig(
+    max_attempts=5,           # Try up to 5 times
+    initial_delay=1.0,        # Wait 1 second before first retry
+    max_delay=30.0,           # Cap delay at 30 seconds
+    backoff_factor=3.0,       # Increase delay by 3x each time
+    retry_on_codes={429, 500, 502, 503, 504}  # Which HTTP codes to retry
+)
+
+# Use custom config when creating bot
+bot = Bot(token="YOUR_TOKEN", retry_config=retry_config)
+```
+
+**Example with Retry:**
+```python
+# With default retry config, this will retry up to 3 times automatically
+try:
+    bot.send_message(123456789, "Hello!")  # Network glitch on first try, succeeds on retry
+except NetworkError as e:
+    print(f"Failed after all retries: {e}")
 ```
 
 ### UI/Console Modes

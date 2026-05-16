@@ -176,6 +176,7 @@ Documentation is as important as code. Please update relevant documentation when
 ### PR Title and Description
 
 Use a clear, descriptive PR title:
+
 - ✅ Good: "Add get_user() method for retrieving Telegram user info"
 - ❌ Bad: "Fix bug" or "Update code"
 
@@ -220,6 +221,7 @@ pip install -r requirements.txt
 ### Test Failures
 
 If tests fail:
+
 1. Read the error message carefully
 2. Run the specific failing test: `pytest test_name.py -v`
 3. Check if it's related to your changes
@@ -237,12 +239,12 @@ mypy huu.py
 ## Questions?
 
 If you have questions:
+
 - Check existing GitHub issues
 - Look at the README and documentation
 - Open a new issue with a clear description
-- Contact support@example.com
+- Contact <support@example.com>
 
-## Thank You!
+## Thank You
 
 Thank you for contributing to VGEE! Your help makes this project better.
-

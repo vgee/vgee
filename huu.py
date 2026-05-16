@@ -3,28 +3,26 @@
 Telegram Bot HTTP Client Module
 
 This module provides a lightweight HTTP client for interacting with the Telegram Bot API.
-It includes comprehensive input validation, error handling, and support for both console
-and GUI interfaces.
+It includes comprehensive input validation, error handling, automatic retry logic,
+and support for both console and GUI interfaces.
 
 Classes:
-    BotError: Base exception for all bot-related errors
-    ValidationError: Raised when input validation fails
-    APIError: Raised when Telegram API returns an error
-    NetworkError: Raised when network communication fails
     Bot: Main class for interacting with Telegram Bot API
 
 Functions:
-    _validate_token: Validates bot token format and content
-    _validate_text: Validates message text for constraints
-    _validate_chat_id_value: Validates chat ID format
-    _validate_timeout: Validates timeout values
     _initialize_session: Creates and configures HTTP session
     _validate_default: Validates default chat ID value
     run_ui: Runs the bot in UI mode (tkinter)
     run_console: Runs the bot in console mode
 
+Modules:
+    For custom exception classes, see the exceptions module.
+    For validation utilities, see the validators module.
+    For retry logic configuration, see the retry module.
+
 Example:
     Basic usage:
+    >>> from huu import Bot
     >>> bot = Bot(token="YOUR_BOT_TOKEN", default=123456789)
     >>> bot.send_message(chat_id=123456789, text="Hello, world!")
     >>> chat_info = bot.get_chat(123456789)
@@ -33,6 +31,11 @@ Example:
     Using context manager:
     >>> with Bot(token="YOUR_BOT_TOKEN") as bot:
     ...     bot.send_message(chat_id=123456789, text="Hello!")
+
+    Using custom retry configuration:
+    >>> from retry import RetryConfig
+    >>> config = RetryConfig(max_attempts=5)
+    >>> bot = Bot(token="YOUR_BOT_TOKEN", retry_config=config)
 """
 import logging
 import tkinter as tk
@@ -41,176 +44,29 @@ from tkinter import messagebox
 
 import requests # type: ignore
 
+from exceptions import ValidationError, APIError, NetworkError
+from validators import validate_token, validate_text, validate_chat_id_value, validate_timeout
+from retry import RetryConfig, retry_with_backoff
+
 # Настройка логирования
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-
-class BotError(Exception):
-    """Base exception for all bot-related errors."""
-
-    pass
-
-
-class ValidationError(BotError):
-    """Raised when input validation fails.
-
-    This exception is raised when bot parameters (token, chat_id, text, timeout)
-    fail validation checks.
-
-    Attributes:
-        message (str): Description of the validation error
-        field (str): Name of the field that failed validation
-    """
-
-    def __init__(self, message: str, field: typing.Optional[str] = None) -> None:
-        """Initialize ValidationError.
-
-        Args:
-            message: Description of the validation error
-            field: Name of the field that failed validation
-        """
-        self.message = message
-        self.field = field
-        super().__init__(message)
-
-
-class APIError(BotError):
-    """Raised when Telegram API returns an error.
-
-    This exception is raised when the Telegram Bot API returns an error response
-    (ok=False).
-
-    Attributes:
-        message (str): Error message from API
-        error_code (int): Error code from API (if available)
-        description (str): Detailed error description from API
-    """
-
-    def __init__(self, message: str, error_code: typing.Optional[int] = None, description: typing.Optional[str] = None) -> None:
-        """Initialize APIError.
-
-        Args:
-            message: Error message
-            error_code: Telegram API error code
-            description: Detailed error description from API
-        """
-        self.message = message
-        self.error_code = error_code
-        self.description = description
-        full_message = f"{message}"
-        if error_code:
-            full_message += f" (error_code: {error_code})"
-        if description:
-            full_message += f" - {description}"
-        super().__init__(full_message)
-
-
-class NetworkError(BotError):
-    """Raised when network communication fails.
-
-    This exception is raised when HTTP requests to the Telegram API fail due to
-    network issues (connection errors, timeouts, etc.).
-
-    Attributes:
-        message (str): Description of the network error
-        original_error (Exception): The original requests exception
-    """
-
-    def __init__(self, message: str, original_error: typing.Optional[Exception] = None) -> None:
-        """Initialize NetworkError.
-
-        Args:
-            message: Description of the network error
-            original_error: The original requests.RequestException
-        """
-        self.message = message
-        self.original_error = original_error
-        super().__init__(message)
-
-
-def _validate_token(token: typing.Optional[str]) -> None:
-    """Validates that token is not empty and has reasonable length.
-
-    Args:
-        token: The bot token to validate
-
-    Raises:
-        ValidationError: If token is invalid
-    """
-    if not token:
-        raise ValidationError("Token cannot be empty", field="token")
-    token_str = str(token).strip()
-    if len(token_str) < 10:
-        raise ValidationError("Token appears too short (minimum 10 characters)", field="token")
-    if not token_str.isascii():
-        raise ValidationError("Token must contain only ASCII characters", field="token")
-
-
-def _validate_text(text: str) -> None:
-    """Validates that message text is not empty and within limits.
-
-    Args:
-        text: The message text to validate
-
-    Raises:
-        ValidationError: If text is invalid
-    """
-    if not text:
-        raise ValidationError("Message text cannot be empty", field="text")
-    if len(text) > 4096:
-        raise ValidationError("Message text exceeds maximum length of 4096 characters", field="text")
-    if text.isspace():
-        raise ValidationError("Message text cannot be only whitespace", field="text")
-
-
-def _validate_chat_id_value(chat_id: int) -> None:
-    """Validates that chat_id is a valid integer.
-
-    Args:
-        chat_id: The chat ID to validate
-
-    Raises:
-        ValidationError: If chat_id is invalid
-    """
-    if not isinstance(chat_id, int):
-        raise ValidationError("Chat ID must be an integer", field="chat_id")
-    if chat_id == 0:
-        raise ValidationError("Chat ID cannot be zero", field="chat_id")
-    # Telegram chat IDs can be negative (for groups/channels)
-    if abs(chat_id) > 999999999999:
-        raise ValidationError("Chat ID appears invalid (out of range)", field="chat_id")
-
-
-def _validate_timeout(timeout: float) -> None:
-    """Validates that timeout is a positive number.
-
-    Args:
-        timeout: The timeout value to validate
-
-    Raises:
-        ValidationError: If timeout is invalid
-    """
-    if not isinstance(timeout, (int, float)):
-        raise ValidationError("Timeout must be a number", field="timeout")
-    if timeout <= 0:
-        raise ValidationError("Timeout must be positive", field="timeout")
-    if timeout > 300:
-        raise ValidationError("Timeout exceeds maximum of 300 seconds", field="timeout")
-
-
+# Default retry configuration for API calls
+DEFAULT_RETRY_CONFIG = RetryConfig(max_attempts=3, initial_delay=0.5)
 class Bot:
     """
     Lightweight HTTP client for Telegram Bot API.
 
     This class provides methods to send messages and retrieve chat/user information
-    from Telegram. It includes comprehensive input validation, error handling, and
-    support for context managers.
+    from Telegram. It includes comprehensive input validation, error handling,
+    automatic retry logic for resilient API calls, and support for context managers.
 
     Attributes:
         token (str): Telegram bot API token
         default (Optional[int]): Default chat ID for operations
         allow_interactive (bool): Whether to allow interactive input
         session (requests.Session): HTTP session for API calls
+        retry_config (RetryConfig): Configuration for automatic retry behavior
 
     Example:
         >>> bot = Bot(token="YOUR_BOT_TOKEN", default=123456789)
@@ -229,6 +85,7 @@ class Bot:
         token: typing.Optional[str] = None,
         default: typing.Optional[typing.Union[int, object, str]] = None,
         allow_interactive: bool = True,
+        retry_config: typing.Optional[RetryConfig] = None,
         **kwargs: object
     ) -> None:
         if not token:
@@ -236,11 +93,35 @@ class Bot:
                 token = input("Enter bot token: ").strip()
             else:
                 raise ValidationError("Token must be provided if interactive input is not allowed", field="token")
-        _validate_token(token)
+        validate_token(token)
         self.token = token
         self.default = _validate_default(default)
         self.allow_interactive = allow_interactive
+        self.retry_config = retry_config or DEFAULT_RETRY_CONFIG
         self.session = _initialize_session()
+
+    @retry_with_backoff()
+    def _make_api_call(self, url: str, payload: dict[str, typing.Any], timeout: float) -> dict[str, typing.Any]:
+        """Internal helper to make API calls with built-in retry support.
+        
+        Args:
+            url: Full API endpoint URL
+            payload: JSON payload to send
+            timeout: Request timeout in seconds
+            
+        Returns:
+            API response data dictionary
+            
+        Raises:
+            APIError: If API returns an error
+            NetworkError: If network request fails
+        """
+        response = self.session.post(url, json=payload, timeout=timeout)
+        response.raise_for_status()
+        data = response.json()
+        if not data.get("ok"):
+            raise APIError("API request failed", description=data.get("description"))
+        return data
 
     def send_message(self, chat_id: typing.Optional[typing.Union[int, str]], text: str, *, timeout: float = 10.0) -> None:
         """
@@ -260,8 +141,8 @@ class Bot:
             >>> bot.send_message(123456789, "Hello, world!")
             >>> bot.send_message(None, "Using default chat")  # Uses bot.default
         """
-        _validate_text(text)
-        _validate_timeout(timeout)
+        validate_text(text)
+        validate_timeout(timeout)
         
         actual = chat_id if chat_id is not None and str(chat_id).strip() != "" else self.default
         if actual is None:
@@ -270,7 +151,7 @@ class Bot:
             chat_int = int(actual)
         except (TypeError, ValueError):
             raise ValidationError("Chat ID must be a number", field="chat_id")
-        _validate_chat_id_value(chat_int)
+        validate_chat_id_value(chat_int)
 
         url = f"https://api.telegram.org/bot{self.token}/sendMessage"
         payload: dict[str, typing.Union[str, int]] = {
@@ -278,11 +159,7 @@ class Bot:
             "text": text
         }
         try:
-            response = self.session.post(url, json=payload, timeout=timeout)
-            response.raise_for_status()
-            data = response.json()
-            if not data.get("ok"):
-                raise APIError("Failed to send message", description=data.get("description"))
+            self._make_api_call(url, payload, timeout)
             logging.info(f"Сообщение отправлено в чат {chat_int}: {text}")
         except requests.exceptions.RequestException as e:
             logging.error(f"Ошибка при отправке сообщения в чат {chat_int}: {e}")
@@ -308,7 +185,7 @@ class Bot:
             >>> chat_info = bot.get_chat(123456789)
             >>> print(chat_info["first_name"])
         """
-        _validate_timeout(timeout)
+        validate_timeout(timeout)
         
         actual = chat_id if chat_id is not None and str(chat_id).strip() != "" else self.default
         if actual is None:
@@ -317,20 +194,12 @@ class Bot:
             chat_int = int(actual)
         except (TypeError, ValueError):
             raise ValidationError("Chat ID must be a number", field="chat_id")
-        _validate_chat_id_value(chat_int)
+        validate_chat_id_value(chat_int)
 
         url = f"https://api.telegram.org/bot{self.token}/getChat"
         payload: dict[str, int] = {"chat_id": chat_int}
         try:
-            response = self.session.get(url, params=payload, timeout=timeout)
-            response.raise_for_status()
-            data = response.json()
-            if not data.get("ok"):
-                raise APIError(
-                    "Failed to get chat information",
-                    error_code=data.get("error_code"),
-                    description=data.get("description")
-                )
+            data = self._make_api_call(url, payload, timeout)
             logging.info(f"Информация о чате {chat_int} получена")
             return data.get("result", {})
         except requests.exceptions.RequestException as e:
@@ -360,13 +229,13 @@ class Bot:
             >>> user_info = bot.get_user(987654321)
             >>> print(f"Is bot: {user_info['is_bot']}")
         """
-        _validate_timeout(timeout)
+        validate_timeout(timeout)
         
         try:
             user_int = int(user_id)
         except (TypeError, ValueError):
             raise ValidationError("User ID must be a number", field="user_id")
-        _validate_chat_id_value(user_int)
+        validate_chat_id_value(user_int)
 
         return self.get_chat(user_int, timeout=timeout)
 

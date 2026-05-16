@@ -2,69 +2,72 @@ import unittest
 from unittest.mock import patch, MagicMock
 import huu
 import requests # type: ignore
+from exceptions import ValidationError, APIError, NetworkError
+from validators import validate_token, validate_text, validate_chat_id_value, validate_timeout
+from retry import RetryConfig, retry_with_backoff
 
 class TestValidation(unittest.TestCase):
     def test_validate_token_empty(self):
-        with self.assertRaises(huu.ValidationError) as context:
-            huu._validate_token("")
+        with self.assertRaises(ValidationError) as context:
+            validate_token("")
         self.assertIn("empty", str(context.exception).lower())
         self.assertEqual(context.exception.field, "token")
 
     def test_validate_token_too_short(self):
-        with self.assertRaises(huu.ValidationError) as context:
-            huu._validate_token("short")
+        with self.assertRaises(ValidationError) as context:
+            validate_token("short")
         self.assertIn("short", str(context.exception).lower())
         self.assertEqual(context.exception.field, "token")
 
     def test_validate_token_non_ascii(self):
-        with self.assertRaises(huu.ValidationError) as context:
-            huu._validate_token("токен123456")
+        with self.assertRaises(ValidationError) as context:
+            validate_token("токен123456")
         self.assertIn("ascii", str(context.exception).lower())
         self.assertEqual(context.exception.field, "token")
 
     def test_validate_token_valid(self):
-        huu._validate_token("validtoken1234567890")  # Should not raise
+        validate_token("validtoken1234567890")  # Should not raise
 
     def test_validate_text_empty(self):
-        with self.assertRaises(huu.ValidationError):
-            huu._validate_text("")
+        with self.assertRaises(ValidationError):
+            validate_text("")
 
     def test_validate_text_whitespace_only(self):
-        with self.assertRaises(huu.ValidationError):
-            huu._validate_text("   ")
+        with self.assertRaises(ValidationError):
+            validate_text("   ")
 
     def test_validate_text_too_long(self):
-        with self.assertRaises(huu.ValidationError) as context:
-            huu._validate_text("x" * 5000)
+        with self.assertRaises(ValidationError) as context:
+            validate_text("x" * 5000)
         self.assertIn("4096", str(context.exception))
         self.assertEqual(context.exception.field, "text")
 
     def test_validate_text_valid(self):
-        huu._validate_text("Valid message text")  # Should not raise
+        validate_text("Valid message text")  # Should not raise
 
     def test_validate_chat_id_value_zero(self):
-        with self.assertRaises(huu.ValidationError):
-            huu._validate_chat_id_value(0)
+        with self.assertRaises(ValidationError):
+            validate_chat_id_value(0)
 
     def test_validate_chat_id_value_out_of_range(self):
-        with self.assertRaises(huu.ValidationError) as context:
-            huu._validate_chat_id_value(9999999999999)
+        with self.assertRaises(ValidationError) as context:
+            validate_chat_id_value(9999999999999)
         self.assertIn("range", str(context.exception).lower())
         self.assertEqual(context.exception.field, "chat_id")
 
     def test_validate_chat_id_value_valid(self):
-        huu._validate_chat_id_value(123456)  # Should not raise
-        huu._validate_chat_id_value(-123456)  # Negative is valid for groups
+        validate_chat_id_value(123456)  # Should not raise
+        validate_chat_id_value(-123456)  # Negative is valid for groups
 
     def test_validate_timeout_non_positive(self):
-        with self.assertRaises(huu.ValidationError):
-            huu._validate_timeout(0)
-        with self.assertRaises(huu.ValidationError):
-            huu._validate_timeout(-5)
+        with self.assertRaises(ValidationError):
+            validate_timeout(0)
+        with self.assertRaises(ValidationError):
+            validate_timeout(-5)
 
     def test_validate_timeout_too_large(self):
-        with self.assertRaises(huu.ValidationError) as context:
-            huu._validate_timeout(500)
+        with self.assertRaises(ValidationError) as context:
+            validate_timeout(500)
         self.assertIn("300", str(context.exception))
         self.assertEqual(context.exception.field, "timeout")
 
@@ -87,7 +90,7 @@ class TestBot(unittest.TestCase):
         self.assertFalse(bot.allow_interactive)
 
     def test_init_without_token_noninteractive(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValidationError):
             huu.Bot(token=None, allow_interactive=False)
 
     @patch('builtins.input', return_value='validtoken1234')
@@ -143,7 +146,7 @@ class TestBot(unittest.TestCase):
         bot = huu.Bot(token='validtoken1234', allow_interactive=False)
         bot.session = mock_session
         
-        with self.assertRaises(huu.ValidationError):
+        with self.assertRaises(ValidationError):
             bot.send_message(123, "")
 
     @patch('huu.requests.Session')
@@ -154,7 +157,7 @@ class TestBot(unittest.TestCase):
         bot = huu.Bot(token='validtoken1234', allow_interactive=False)
         bot.session = mock_session
         
-        with self.assertRaises(huu.ValidationError):
+        with self.assertRaises(ValidationError):
             bot.send_message(123, "x" * 5000)
 
     @patch('huu.requests.Session')
@@ -165,7 +168,7 @@ class TestBot(unittest.TestCase):
         bot = huu.Bot(token='validtoken1234', allow_interactive=False)
         bot.session = mock_session
         
-        with self.assertRaises(huu.ValidationError):
+        with self.assertRaises(ValidationError):
             bot.send_message(123, "test", timeout=500)
 
     @patch('huu.requests.Session')
@@ -176,7 +179,7 @@ class TestBot(unittest.TestCase):
         bot = huu.Bot(token='validtoken1234', allow_interactive=False)
         bot.session = mock_session
         
-        with self.assertRaises(huu.ValidationError):
+        with self.assertRaises(ValidationError):
             bot.send_message(0, "test")
 
     @patch('huu.requests.Session')
@@ -187,7 +190,7 @@ class TestBot(unittest.TestCase):
 
         bot = huu.Bot(token='validtoken1234', allow_interactive=False)
         bot.session = mock_session
-        with self.assertRaises(huu.NetworkError):
+        with self.assertRaises(NetworkError):
             bot.send_message(123, "test")
 
     @patch('huu.requests.Session')
@@ -205,7 +208,7 @@ class TestBot(unittest.TestCase):
         bot = huu.Bot(token='validtoken1234', allow_interactive=False)
         bot.session = mock_session
         
-        with self.assertRaises(huu.APIError) as context:
+        with self.assertRaises(APIError) as context:
             bot.get_chat(999)
         self.assertEqual(context.exception.error_code, 400)
 
@@ -218,7 +221,7 @@ class TestBot(unittest.TestCase):
         bot = huu.Bot(token='validtoken1234', allow_interactive=False)
         bot.session = mock_session
         
-        with self.assertRaises(huu.NetworkError):
+        with self.assertRaises(NetworkError):
             bot.get_chat(123)
 
     @patch('huu.requests.Session')
@@ -331,6 +334,128 @@ class TestBot(unittest.TestCase):
         self.assertEqual(user_info["id"], 456)
         self.assertEqual(user_info["is_bot"], False)
         self.assertEqual(user_info["first_name"], "Jane")
+
+
+class TestRetry(unittest.TestCase):
+    def test_retry_config_defaults(self):
+        config = RetryConfig()
+        self.assertEqual(config.max_attempts, 3)
+        self.assertEqual(config.initial_delay, 0.5)
+        self.assertEqual(config.max_delay, 10.0)
+        self.assertEqual(config.backoff_factor, 2.0)
+        self.assertIn(429, config.retry_on_codes)
+        self.assertIn(500, config.retry_on_codes)
+
+    def test_retry_config_custom_values(self):
+        config = RetryConfig(max_attempts=5, initial_delay=1.0, max_delay=20.0, backoff_factor=1.5)
+        self.assertEqual(config.max_attempts, 5)
+        self.assertEqual(config.initial_delay, 1.0)
+        self.assertEqual(config.max_delay, 20.0)
+        self.assertEqual(config.backoff_factor, 1.5)
+
+    def test_retry_config_minimum_values(self):
+        config = RetryConfig(max_attempts=0, initial_delay=0.0, backoff_factor=0.5)
+        self.assertEqual(config.max_attempts, 1)  # Enforced minimum of 1
+        self.assertEqual(config.initial_delay, 0.1)  # Enforced minimum of 0.1
+        self.assertEqual(config.backoff_factor, 1.0)  # Enforced minimum of 1.0
+
+    @patch('retry.time.sleep')
+    def test_retry_success_on_first_attempt(self, mock_sleep):
+        @retry_with_backoff(RetryConfig(max_attempts=3))
+        def succeeds_first():
+            return "success"
+        
+        result = succeeds_first()
+        self.assertEqual(result, "success")
+        mock_sleep.assert_not_called()
+
+    @patch('retry.time.sleep')
+    def test_retry_succeeds_after_timeout(self, mock_sleep):
+        attempts = [0]
+        
+        @retry_with_backoff(RetryConfig(max_attempts=3, initial_delay=0.1))
+        def fails_once():
+            attempts[0] += 1
+            if attempts[0] == 1:
+                raise requests.exceptions.Timeout("Timeout")
+            return "success"
+        
+        result = fails_once()
+        self.assertEqual(result, "success")
+        self.assertEqual(attempts[0], 2)
+        mock_sleep.assert_called_once()
+
+    @patch('retry.time.sleep')
+    def test_retry_exhausts_attempts(self, mock_sleep):
+        @retry_with_backoff(RetryConfig(max_attempts=2, initial_delay=0.1))
+        def always_fails():
+            raise requests.exceptions.Timeout("Timeout")
+        
+        with self.assertRaises(NetworkError) as context:
+            always_fails()
+        self.assertIn("Failed after 2 attempts", str(context.exception))
+
+    @patch('retry.time.sleep')
+    def test_retry_with_connection_error(self, mock_sleep):
+        attempts = [0]
+        
+        @retry_with_backoff(RetryConfig(max_attempts=3, initial_delay=0.1))
+        def fails_connection():
+            attempts[0] += 1
+            if attempts[0] < 3:
+                raise requests.exceptions.ConnectionError("Connection failed")
+            return "success"
+        
+        result = fails_connection()
+        self.assertEqual(result, "success")
+        self.assertEqual(attempts[0], 3)
+
+    @patch('retry.time.sleep')
+    def test_retry_with_retriable_http_error(self, mock_sleep):
+        attempts = [0]
+        
+        def mock_response():
+            mock_resp = MagicMock()
+            mock_resp.status_code = 503
+            return mock_resp
+        
+        @retry_with_backoff(RetryConfig(max_attempts=3, initial_delay=0.1))
+        def fails_http():
+            attempts[0] += 1
+            if attempts[0] < 3:
+                error = requests.exceptions.HTTPError()
+                error.response = mock_response()
+                raise error
+            return "success"
+        
+        result = fails_http()
+        self.assertEqual(result, "success")
+        self.assertEqual(attempts[0], 3)
+
+    def test_retry_non_retriable_http_error(self):
+        def mock_response():
+            mock_resp = MagicMock()
+            mock_resp.status_code = 400
+            return mock_resp
+        
+        @retry_with_backoff(RetryConfig(max_attempts=3, initial_delay=0.1))
+        def fails_http():
+            error = requests.exceptions.HTTPError()
+            error.response = mock_response()
+            raise error
+        
+        with self.assertRaises(requests.exceptions.HTTPError):
+            fails_http()
+
+    def test_bot_with_custom_retry_config(self):
+        custom_config = RetryConfig(max_attempts=5)
+        bot = huu.Bot(token='validtoken1234', allow_interactive=False, retry_config=custom_config)
+        self.assertEqual(bot.retry_config.max_attempts, 5)
+
+    def test_bot_with_default_retry_config(self):
+        bot = huu.Bot(token='validtoken1234', allow_interactive=False)
+        self.assertEqual(bot.retry_config.max_attempts, 3)
+
 
 if __name__ == '__main__':
     unittest.main()
