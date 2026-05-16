@@ -37,7 +37,7 @@ git clone https://github.com/yourusername/vgee.git
 cd vgee
 ```
 
-2. Install the required dependencies:
+1. Install the required dependencies:
 
 ```sh
 pip install -r requirements.txt
@@ -83,11 +83,13 @@ with Bot(token="YOUR_BOT_TOKEN") as bot:
 Sends a message to a Telegram chat.
 
 **Parameters:**
+
 - `chat_id` (int or str, optional): The target chat ID. If not provided, uses `Bot.default`
 - `text` (str): The message text (max 4096 characters)
 - `timeout` (float): Request timeout in seconds (default: 10.0, max: 300)
 
 **Example:**
+
 ```python
 bot.send_message(123456789, "Hello, Telegram!")
 ```
@@ -97,12 +99,14 @@ bot.send_message(123456789, "Hello, Telegram!")
 Retrieves information about a chat.
 
 **Parameters:**
+
 - `chat_id` (int or str, optional): The target chat ID. If not provided, uses `Bot.default`
 - `timeout` (float): Request timeout in seconds
 
 **Returns:** Dictionary with chat information (id, type, title, first_name, username, etc.)
 
 **Example:**
+
 ```python
 chat_info = bot.get_chat(123456789)
 print(chat_info["first_name"])  # Get user's first name
@@ -113,12 +117,14 @@ print(chat_info["first_name"])  # Get user's first name
 Retrieves information about a user (for private chats).
 
 **Parameters:**
+
 - `user_id` (int or str): The user ID
 - `timeout` (float): Request timeout in seconds
 
 **Returns:** Dictionary with user information
 
 **Example:**
+
 ```python
 user_info = bot.get_user(987654321)
 print(user_info["is_bot"])  # Check if it's a bot
@@ -129,25 +135,30 @@ print(user_info["is_bot"])  # Check if it's a bot
 All methods include comprehensive input validation:
 
 **Token Validation:**
+
 - Must not be empty
 - Must be at least 10 characters
 - Must contain only ASCII characters
 
 **Message Text Validation:**
+
 - Must not be empty
 - Must not exceed 4096 characters (Telegram limit)
 - Cannot be whitespace-only
 
 **Chat ID Validation:**
+
 - Must be an integer
 - Cannot be zero
 - Must be within valid range (supports negative IDs for groups/channels)
 
 **Timeout Validation:**
+
 - Must be a positive number
 - Cannot exceed 300 seconds
 
 **Invalid Input Example:**
+
 ```python
 # These will raise ValueError with descriptive messages
 bot.send_message(0, "test")              # Chat ID cannot be zero
@@ -161,18 +172,21 @@ bot.send_message(123, "test", timeout=500) # Timeout too large
 The bot includes automatic retry logic with exponential backoff to handle transient network issues:
 
 **Default Retry Behavior:**
+
 - Maximum 3 retry attempts
 - Initial delay: 0.5 seconds
 - Exponential backoff multiplier: 2.0x
 - Automatic retry on: timeouts, connection errors, and HTTP 429/5xx errors
 
 **Retryable Errors:**
+
 - `requests.exceptions.Timeout` - Connection or read timeout
 - `requests.exceptions.ConnectionError` - Network connectivity issues
 - HTTP Status 429 (Too Many Requests)
 - HTTP Status 500-504 (Server errors)
 
 **Non-Retryable Errors:**
+
 - HTTP Status 400-403 (Client errors like invalid token)
 - JSON decode errors
 - `ValidationError` (input validation failures)
@@ -196,6 +210,7 @@ bot = Bot(token="YOUR_TOKEN", retry_config=retry_config)
 ```
 
 **Example with Retry:**
+
 ```python
 # With default retry config, this will retry up to 3 times automatically
 try:
@@ -209,6 +224,7 @@ except NetworkError as e:
 The bot can be run in two interactive modes:
 
 #### Console Mode
+
 ```bash
 python huu.py
 # Select 'console' when prompted
@@ -218,6 +234,7 @@ python huu.py
 ```
 
 #### UI Mode (Tkinter)
+
 ```bash
 python huu.py
 # Select 'ui' when prompted
@@ -226,7 +243,6 @@ python huu.py
 
 ## Project Structure
 
-```
 vgee/
 ├── main.py              # Entry point for the bot
 ├── huu.py              # Core Bot class and utilities
@@ -240,6 +256,7 @@ vgee/
 └── tests/
     ├── test_bot.py    # Bot functionality tests
     └── test_config.py # Configuration tests
+
 ```
 
 ## Testing
@@ -265,6 +282,7 @@ pytest test_huu.py -v
 ### Test Coverage
 
 The project includes 30+ tests covering:
+
 - Bot initialization and configuration
 - Message sending with valid and invalid inputs
 - Chat and user information retrieval
@@ -303,6 +321,7 @@ except ConfigError as e:
 ## Best Practices
 
 1. **Always use context managers** for resource management:
+
    ```python
    with Bot(token="YOUR_TOKEN") as bot:
        bot.send_message(chat_id, "Message")
@@ -311,6 +330,7 @@ except ConfigError as e:
 2. **Validate external inputs** before calling bot methods
 
 3. **Handle exceptions** appropriately:
+
    ```python
    try:
        bot.send_message(chat_id, text)
@@ -326,4 +346,4 @@ except ConfigError as e:
 
 ## Contacts
 
-If you have any questions or need further information, please contact us at support@example.com.
+If you have any questions or need further information, please contact us at <support@example.com>.
