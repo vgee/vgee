@@ -335,6 +335,39 @@ class TestBot(unittest.TestCase):
         self.assertEqual(user_info["is_bot"], False)
         self.assertEqual(user_info["first_name"], "Jane")
 
+    @patch('huu.requests.Session')
+    def test_get_updates_success(self, mock_session_cls):
+        mock_session = MagicMock()
+        mock_response = MagicMock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = {
+            "ok": True,
+            "result": [
+                {"update_id": 1, "message": {"text": "hi"}}
+            ]
+        }
+        mock_session.get.return_value = mock_response
+        mock_session_cls.return_value = mock_session
+
+        bot = huu.Bot(token='validtoken1234', allow_interactive=False)
+        bot.session = mock_session
+        updates = bot.get_updates(limit=1)
+
+        self.assertEqual(len(updates), 1)
+        self.assertEqual(updates[0]["update_id"], 1)
+        mock_session.get.assert_called_once()
+
+    def test_get_updates_invalid_limit(self):
+        bot = huu.Bot(token='validtoken1234', allow_interactive=False)
+        with self.assertRaises(ValidationError):
+            bot.get_updates(limit=0)
+
+    def test_bot_repr_eq_call(self):
+        bot = huu.Bot(token='validtoken1234', allow_interactive=False, default='123')
+        self.assertEqual(repr(bot), 'Bot(token=validtoken1234, default=123)')
+        self.assertEqual(bot(), 123)
+        self.assertEqual(bot, huu.Bot(token='validtoken1234', default='123'))
+
 
 class TestRetry(unittest.TestCase):
     def test_retry_config_defaults(self):

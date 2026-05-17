@@ -40,9 +40,15 @@ Example:
 import logging
 import tkinter as tk
 import typing
+import types as _types
 from tkinter import messagebox
 
 import requests # type: ignore
+
+try:
+    import aiogram
+except ImportError:
+    aiogram = _types.SimpleNamespace(types=_types.SimpleNamespace(Chat=None))
 
 from exceptions import ValidationError, APIError, NetworkError
 from validators import validate_token, validate_text, validate_chat_id_value, validate_timeout
@@ -100,8 +106,25 @@ class Bot:
         self.retry_config = retry_config or DEFAULT_RETRY_CONFIG
         self.session = _initialize_session()
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(token={self.token}, default={self.default})"
+
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Bot):
+            return False
+        return self.token == other.token and self.default == other.default
+
+    def __call__(self) -> typing.Optional[int]:
+        return self.default
+
     @retry_with_backoff()
-    def _make_api_call(self, url: str, payload: dict[str, typing.Any], timeout: float) -> dict[str, typing.Any]:
+    def _make_api_call(
+        self,
+        url: str,
+        payload: dict[str, typing.Any],
+        timeout: float,
+        method: str = "post",
+    ) -> dict[str, typing.Any]:
         """Internal helper to make API calls with built-in retry support.
         
         Args:
@@ -116,11 +139,18 @@ class Bot:
             APIError: If API returns an error
             NetworkError: If network request fails
         """
-        response = self.session.post(url, json=payload, timeout=timeout)
+        if method.lower() == "get":
+            response = self.session.get(url, params=payload, timeout=timeout)
+        else:
+            response = self.session.post(url, json=payload, timeout=timeout)
         response.raise_for_status()
         data = response.json()
         if not data.get("ok"):
-            raise APIError("API request failed", description=data.get("description"))
+            raise APIError(
+                "API request failed",
+                error_code=data.get("error_code"),
+                description=data.get("description"),
+            )
         return data
 
     def send_message(self, chat_id: typing.Optional[typing.Union[int, str]], text: str, *, timeout: float = 10.0) -> None:
@@ -199,7 +229,7 @@ class Bot:
         url = f"https://api.telegram.org/bot{self.token}/getChat"
         payload: dict[str, int] = {"chat_id": chat_int}
         try:
-            data = self._make_api_call(url, payload, timeout)
+            data = self._make_api_call(url, payload, timeout, method="get")
             logging.info(f"Информация о чате {chat_int} получена")
             return data.get("result", {})
         except requests.exceptions.RequestException as e:
@@ -239,6 +269,37 @@ class Bot:
 
         return self.get_chat(user_int, timeout=timeout)
 
+    def get_updates(
+        self,
+        offset: typing.Optional[int] = None,
+        limit: int = 100,
+        *,
+        timeout: float = 10.0,
+    ) -> list[dict[str, typing.Any]]:
+        """
+        Retrieves incoming updates for the bot.
+
+        Args:
+            offset (int, optional): Identifier of the first update to return.
+            limit (int): Limits the number of updates to be retrieved. Must be 1-100.
+            timeout (float): Request timeout in seconds. Default 10.0.
+
+        Returns:
+            list: List of update objects returned by Telegram.
+        """
+        validate_timeout(timeout)
+        if not isinstance(limit, int) or not (1 <= limit <= 100):
+            raise ValidationError("Limit must be an integer between 1 and 100", field="limit")
+
+        payload: dict[str, typing.Any] = {"limit": limit}
+        if offset is not None:
+            payload["offset"] = offset
+
+        url = f"https://api.telegram.org/bot{self.token}/getUpdates"
+        data = self._make_api_call(url, payload, timeout, method="get")
+        logging.info("Updates successfully retrieved")
+        return data.get("result", [])
+
     def close(self) -> None:
         if getattr(self, "session", None) is not None:
             logging.info("Закрытие сессии")
@@ -264,6 +325,10 @@ class Bot:
 
 def _initialize_session() -> requests.Session:
     session = requests.Session()
+    if not hasattr(session, "headers") or session.headers is None:
+        session.headers = {}
+    elif not isinstance(session.headers, dict):
+        session.headers = dict(session.headers)
     session.headers.update({
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
         "Content-Type": "application/json"
@@ -288,6 +353,10 @@ def _validate_default(default: typing.Optional[typing.Union[int, object, str]]) 
         if isinstance(val, str) and val.isdigit():
             return int(val)
     raise ValueError("default must be an int, a digit string, or an object with an integer 'id' attribute")
+
+
+def _validate_timeout(timeout: float) -> None:
+    return validate_timeout(timeout)
 
 
 def run_ui(bot: Bot) -> None:
