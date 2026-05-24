@@ -3,8 +3,8 @@
 Telegram Bot HTTP Client Module
 
 This module provides a lightweight HTTP client for interacting with the Telegram Bot API.
-It includes comprehensive input validation, error handling, automatic retry logic,
-and support for both console and GUI interfaces.
+It includes comprehensive input validation, response validation, error handling, 
+automatic retry logic, and support for both console and GUI interfaces.
 
 Classes:
     Bot: Main class for interacting with Telegram Bot API
@@ -17,7 +17,8 @@ Functions:
 
 Modules:
     For custom exception classes, see the exceptions module.
-    For validation utilities, see the validators module.
+    For input validation utilities, see the validators module.
+    For response validation, see the response_validators module.
     For retry logic configuration, see the retry module.
 
 Example:
@@ -53,6 +54,7 @@ except ImportError:
 from exceptions import ValidationError, APIError, NetworkError
 from validators import validate_token, validate_text, validate_chat_id_value, validate_timeout
 from retry import RetryConfig, retry_with_backoff
+from response_validators import ResponseValidator, validate_api_response, extract_result
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -127,16 +129,19 @@ class Bot:
     ) -> dict[str, typing.Any]:
         """Internal helper to make API calls with built-in retry support.
         
+        Includes comprehensive response validation to ensure data integrity.
+        
         Args:
             url: Full API endpoint URL
             payload: JSON payload to send
             timeout: Request timeout in seconds
+            method: HTTP method ("post" or "get"), default "post"
             
         Returns:
-            API response data dictionary
+            Validated API response data dictionary
             
         Raises:
-            APIError: If API returns an error
+            APIError: If API returns an error or response is invalid
             NetworkError: If network request fails
         """
         if method.lower() == "get":
@@ -145,12 +150,8 @@ class Bot:
             response = self.session.post(url, json=payload, timeout=timeout)
         response.raise_for_status()
         data = response.json()
-        if not data.get("ok"):
-            raise APIError(
-                "API request failed",
-                error_code=data.get("error_code"),
-                description=data.get("description"),
-            )
+        # Validate response structure and content
+        validate_api_response(data)
         return data
 
     def send_message(self, chat_id: typing.Optional[typing.Union[int, str]], text: str, *, timeout: float = 10.0) -> None:
@@ -164,7 +165,7 @@ class Bot:
 
         Raises:
             ValidationError: If chat_id, text, or timeout is invalid.
-            APIError: If the Telegram API returns an error.
+            APIError: If the Telegram API returns an error or response is invalid.
             NetworkError: If the API request fails due to network issues.
 
         Example:
@@ -189,7 +190,10 @@ class Bot:
             "text": text
         }
         try:
-            self._make_api_call(url, payload, timeout)
+            data = self._make_api_call(url, payload, timeout)
+            # Validate the message result
+            result = extract_result(data)
+            ResponseValidator.validate_send_message_response({"ok": True, "result": result})
             logging.info(f"Сообщение отправлено в чат {chat_int}: {text}")
         except requests.exceptions.RequestException as e:
             logging.error(f"Ошибка при отправке сообщения в чат {chat_int}: {e}")
@@ -208,7 +212,7 @@ class Bot:
 
         Raises:
             ValidationError: If chat_id is missing or invalid.
-            APIError: If the Telegram API returns an error.
+            APIError: If the Telegram API returns an error or response is invalid.
             NetworkError: If the API request fails due to network issues.
 
         Example:
@@ -230,8 +234,11 @@ class Bot:
         payload: dict[str, int] = {"chat_id": chat_int}
         try:
             data = self._make_api_call(url, payload, timeout, method="get")
+            # Validate the chat result
+            result = extract_result(data)
+            ResponseValidator.validate_get_chat_response({"ok": True, "result": result})
             logging.info(f"Информация о чате {chat_int} получена")
-            return data.get("result", {})
+            return result
         except requests.exceptions.RequestException as e:
             logging.error(f"Ошибка при получении информации о чате {chat_int}: {e}")
             raise NetworkError(f"Failed to retrieve chat information for {chat_int}", original_error=e)

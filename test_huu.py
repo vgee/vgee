@@ -5,6 +5,10 @@ import requests # type: ignore
 from exceptions import ValidationError, APIError, NetworkError
 from validators import validate_token, validate_text, validate_chat_id_value, validate_timeout
 from retry import RetryConfig, retry_with_backoff
+from response_validators import (
+    ResponseValidator, validate_api_response, validate_message_result,
+    validate_chat_result, validate_user_result, extract_result
+)
 
 class TestValidation(unittest.TestCase):
     def test_validate_token_empty(self):
@@ -488,6 +492,136 @@ class TestRetry(unittest.TestCase):
     def test_bot_with_default_retry_config(self):
         bot = huu.Bot(token='validtoken1234', allow_interactive=False)
         self.assertEqual(bot.retry_config.max_attempts, 3)
+
+
+class TestResponseValidation(unittest.TestCase):
+    def test_validate_api_response_valid_success(self):
+        data = {"ok": True, "result": {"message_id": 123, "date": 1234567890}}
+        result = validate_api_response(data)
+        self.assertEqual(result, data)
+
+    def test_validate_api_response_not_dict(self):
+        with self.assertRaises(APIError) as context:
+            validate_api_response("not a dict")
+        self.assertIn("expected JSON object", str(context.exception))
+
+    def test_validate_api_response_missing_ok_field(self):
+        with self.assertRaises(APIError) as context:
+            validate_api_response({"result": {}})
+        self.assertIn("missing 'ok' field", str(context.exception))
+
+    def test_validate_api_response_ok_not_bool(self):
+        with self.assertRaises(APIError) as context:
+            validate_api_response({"ok": "true"})
+        self.assertIn("must be boolean", str(context.exception))
+
+    def test_validate_api_response_error(self):
+        with self.assertRaises(APIError) as context:
+            validate_api_response({"ok": False, "error_code": 400, "description": "Bad Request"})
+        self.assertIn("Bad Request", str(context.exception))
+        self.assertEqual(context.exception.error_code, 400)
+
+    def test_validate_message_result_valid(self):
+        result = {"message_id": 123, "date": 1234567890, "text": "Hello"}
+        validated = validate_message_result(result)
+        self.assertEqual(validated["message_id"], 123)
+
+    def test_validate_message_result_missing_message_id(self):
+        with self.assertRaises(APIError) as context:
+            validate_message_result({"date": 1234567890})
+        self.assertIn("missing required fields", str(context.exception))
+
+    def test_validate_message_result_missing_date(self):
+        with self.assertRaises(APIError) as context:
+            validate_message_result({"message_id": 123})
+        self.assertIn("missing required fields", str(context.exception))
+
+    def test_validate_message_result_negative_message_id(self):
+        with self.assertRaises(APIError) as context:
+            validate_message_result({"message_id": -1, "date": 1234567890})
+        self.assertIn("must be positive", str(context.exception))
+
+    def test_validate_message_result_not_dict(self):
+        with self.assertRaises(APIError) as context:
+            validate_message_result([])
+        self.assertIn("expected object", str(context.exception))
+
+    def test_validate_chat_result_valid_private(self):
+        result = {"id": 123, "type": "private", "first_name": "John"}
+        validated = validate_chat_result(result)
+        self.assertEqual(validated["id"], 123)
+
+    def test_validate_chat_result_valid_group(self):
+        result = {"id": -456, "type": "group", "title": "Test Group"}
+        validated = validate_chat_result(result)
+        self.assertEqual(validated["id"], -456)
+
+    def test_validate_chat_result_missing_id(self):
+        with self.assertRaises(APIError) as context:
+            validate_chat_result({"type": "private"})
+        self.assertIn("missing required fields", str(context.exception))
+
+    def test_validate_chat_result_missing_type(self):
+        with self.assertRaises(APIError) as context:
+            validate_chat_result({"id": 123})
+        self.assertIn("missing required fields", str(context.exception))
+
+    def test_validate_chat_result_invalid_type(self):
+        with self.assertRaises(APIError) as context:
+            validate_chat_result({"id": 123, "type": "invalid_type"})
+        self.assertIn("unknown chat type", str(context.exception))
+
+    def test_validate_user_result_valid(self):
+        result = {"id": 123, "is_bot": False, "first_name": "John"}
+        validated = validate_user_result(result)
+        self.assertEqual(validated["id"], 123)
+
+    def test_validate_user_result_is_bot_true(self):
+        result = {"id": 123, "is_bot": True, "first_name": "BotName"}
+        validated = validate_user_result(result)
+        self.assertTrue(validated["is_bot"])
+
+    def test_validate_user_result_missing_is_bot(self):
+        with self.assertRaises(APIError) as context:
+            validate_user_result({"id": 123, "first_name": "John"})
+        self.assertIn("missing required fields", str(context.exception))
+
+    def test_validate_user_result_empty_first_name(self):
+        with self.assertRaises(APIError) as context:
+            validate_user_result({"id": 123, "is_bot": False, "first_name": "   "})
+        self.assertIn("cannot be empty", str(context.exception))
+
+    def test_extract_result_valid(self):
+        data = {"ok": True, "result": {"message_id": 123}}
+        result = extract_result(data)
+        self.assertEqual(result["message_id"], 123)
+
+    def test_extract_result_missing(self):
+        with self.assertRaises(APIError) as context:
+            extract_result({"ok": True})
+        self.assertIn("missing 'result' field", str(context.exception))
+
+    def test_response_validator_send_message(self):
+        data = {"ok": True, "result": {"message_id": 123, "date": 1234567890}}
+        validated = ResponseValidator.validate_send_message_response(data)
+        self.assertEqual(validated["message_id"], 123)
+
+    def test_response_validator_get_chat(self):
+        data = {"ok": True, "result": {"id": 456, "type": "private", "first_name": "Jane"}}
+        validated = ResponseValidator.validate_get_chat_response(data)
+        self.assertEqual(validated["id"], 456)
+
+    def test_response_validator_get_user(self):
+        data = {"ok": True, "result": {"id": 789, "is_bot": False, "first_name": "Bob"}}
+        validated = ResponseValidator.validate_get_user_response(data)
+        self.assertEqual(validated["id"], 789)
+
+    def test_response_validator_get_user_with_type(self):
+        # User response can be a chat with type='private'
+        data = {"ok": True, "result": {"id": 789, "type": "private", "first_name": "Bob"}}
+        validated = ResponseValidator.validate_get_user_response(data)
+        self.assertEqual(validated["id"], 789)
+        self.assertEqual(validated["type"], "private")
 
 
 if __name__ == '__main__':

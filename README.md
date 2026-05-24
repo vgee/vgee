@@ -1,6 +1,6 @@
 # VGEE Project
 
-VGEE (Very Good Example Environment) is a sample project to demonstrate various coding practices and testing strategies. It includes a Telegram bot HTTP client with comprehensive input validation, error handling, automatic retry logic, and testing.
+VGEE (Very Good Example Environment) is a sample project to demonstrate various coding practices and testing strategies. It includes a Telegram bot HTTP client with comprehensive input validation, error handling, automatic retry logic, response validation, and testing.
 
 ## Table of Contents
 
@@ -10,6 +10,7 @@ VGEE (Very Good Example Environment) is a sample project to demonstrate various 
 - [Usage](#usage)
   - [Core Methods](#core-methods)
   - [Input Validation](#input-validation)
+  - [Response Validation](#response-validation)
   - [Retry Logic](#retry-logic)
   - [UI/Console Modes](#uiconsole-modes)
 - [Project Structure](#project-structure)
@@ -21,12 +22,14 @@ VGEE (Very Good Example Environment) is a sample project to demonstrate various 
 
 - **Telegram Bot Client** - HTTP-based client for sending messages and retrieving chat/user information
 - **Input Validation** - Comprehensive validation for tokens, chat IDs, messages, and timeouts
+- **Response Validation** - Validates Telegram API responses for data integrity and type safety
 - **Automatic Retry Logic** - Exponential backoff retry mechanism for resilient API calls
 - **Multiple Interfaces** - Console and GUI (tkinter) modes for interacting with the bot
 - **Context Manager Support** - Proper resource management with context managers
-- **Extensive Testing** - 50+ unit tests covering core functionality and edge cases
+- **Extensive Testing** - 65+ unit tests covering core functionality and edge cases
 - **Type Hints** - Full type annotations for better IDE support and code clarity
 - **Logging** - Detailed logging for debugging and monitoring
+
 
 ## Installation
 
@@ -165,6 +168,43 @@ bot.send_message(0, "test")              # Chat ID cannot be zero
 bot.send_message(123, "")                # Message cannot be empty
 bot.send_message(123, "x" * 5000)        # Message too long
 bot.send_message(123, "test", timeout=500) # Timeout too large
+```
+
+### Response Validation
+
+All responses from the Telegram API are automatically validated to ensure data integrity and type safety:
+
+**Automatic Validation Includes:**
+
+- **Basic Response Structure** - All responses must have an "ok" boolean field
+- **Error Responses** - Validates error_code and description fields when ok=false
+- **Message Results** - Validates message_id (positive integer) and date (Unix timestamp)
+- **Chat Results** - Validates id, type (private/group/supergroup/channel), and required fields
+- **User Results** - Validates id, is_bot (boolean), and first_name (non-empty string)
+
+**Validation Examples:**
+
+```python
+# Invalid response structures are caught automatically
+try:
+    bot.send_message(123, "Hello")
+except APIError as e:
+    # Catches malformed responses, missing fields, type mismatches, etc.
+    print(f"Response validation failed: {e.description}")
+```
+
+**Custom Validation Usage:**
+
+```python
+from response_validators import ResponseValidator
+
+# Manually validate API responses if needed
+response_data = {"ok": True, "result": {...}}
+validated = ResponseValidator.validate_send_message_response(response_data)
+
+# Or validate individual parts
+from response_validators import validate_chat_result
+chat_info = validate_chat_result(result_dict)
 ```
 
 ### Retry Logic
