@@ -54,6 +54,7 @@ except ImportError:
 from exceptions import ValidationError, APIError, NetworkError
 from validators import validate_token, validate_text, validate_chat_id_value, validate_timeout
 from retry import RetryConfig, retry_with_backoff
+from api_client import APIClient
 from response_validators import ResponseValidator, validate_api_response, extract_result
 
 # Настройка логирования
@@ -106,7 +107,25 @@ class Bot:
         self.default = _validate_default(default)
         self.allow_interactive = allow_interactive
         self.retry_config = retry_config or DEFAULT_RETRY_CONFIG
-        self.session = _initialize_session()
+        # Create API client responsible for HTTP and response validation
+        self.api_client = APIClient(self.token, retry_config=self.retry_config)
+        # Keep a compatibility attribute for older code/tests
+        self.session = self.api_client.session
+
+    @property
+    def session(self):
+        api = getattr(self, 'api_client', None)
+        if api is not None:
+            return api.session
+        return getattr(self, '_session', None)
+
+    @session.setter
+    def session(self, value):
+        api = getattr(self, 'api_client', None)
+        if api is not None:
+            api.session = value
+        else:
+            self._session = value
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(token={self.token}, default={self.default})"
@@ -119,7 +138,6 @@ class Bot:
     def __call__(self) -> typing.Optional[int]:
         return self.default
 
-    @retry_with_backoff()
     def _make_api_call(
         self,
         url: str,
@@ -127,31 +145,11 @@ class Bot:
         timeout: float,
         method: str = "post",
     ) -> dict[str, typing.Any]:
-        """Internal helper to make API calls with built-in retry support.
-        
-        Includes comprehensive response validation to ensure data integrity.
-        
-        Args:
-            url: Full API endpoint URL
-            payload: JSON payload to send
-            timeout: Request timeout in seconds
-            method: HTTP method ("post" or "get"), default "post"
-            
-        Returns:
-            Validated API response data dictionary
-            
-        Raises:
-            APIError: If API returns an error or response is invalid
-            NetworkError: If network request fails
-        """
+        """Delegate to APIClient for HTTP and response validation."""
         if method.lower() == "get":
-            response = self.session.get(url, params=payload, timeout=timeout)
+            data = self.api_client.get(url, payload, timeout)
         else:
-            response = self.session.post(url, json=payload, timeout=timeout)
-        response.raise_for_status()
-        data = response.json()
-        # Validate response structure and content
-        validate_api_response(data)
+            data = self.api_client.post(url, payload, timeout)
         return data
 
     def send_message(self, chat_id: typing.Optional[typing.Union[int, str]], text: str, *, timeout: float = 10.0) -> None:
@@ -308,7 +306,14 @@ class Bot:
         return data.get("result", [])
 
     def close(self) -> None:
-        if getattr(self, "session", None) is not None:
+        # Prefer closing API client if present
+        if getattr(self, "api_client", None) is not None:
+            logging.info("Closing API client session")
+            try:
+                self.api_client.close()
+            finally:
+                self.api_client = None
+        elif getattr(self, "session", None) is not None:
             logging.info("Закрытие сессии")
             try:
                 self.session.close()
