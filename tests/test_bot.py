@@ -1,5 +1,4 @@
 import unittest
-from unittest.mock import patch, MagicMock
 from huu import Bot
 
 class TestBot(unittest.TestCase):
@@ -26,13 +25,6 @@ class TestBot(unittest.TestCase):
     def test_invalid_token(self):
         with self.assertRaises(ValueError):
             Bot(token=None, default=123)
-
-    def test_method_behavior(self):
-        with patch("huu.Bot.some_method") as mock_method:
-            mock_method.return_value = "mocked_result"
-            result = self.bot.some_method()
-            self.assertEqual(result, "mocked_result")
-            mock_method.assert_called_once()
 
     def test_multiple_defaults(self):
         defaults = [111, 222, 333]
