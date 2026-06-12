@@ -20,7 +20,6 @@ Modules:
     For input validation utilities, see the validators module.
     For response validation, see the response_validators module.
     For retry logic configuration, see the retry module.
-    For configuration management, see the config_manager module.
 
 Example:
     Basic usage:
@@ -33,13 +32,6 @@ Example:
     Using context manager:
     >>> with Bot(token="YOUR_BOT_TOKEN") as bot:
     ...     bot.send_message(chat_id=123456789, text="Hello!")
-
-    Using ConfigManager for environment-specific settings:
-    >>> from config_manager import ConfigManager
-    >>> config = ConfigManager.load()  # Loads based on APP_ENV
-    >>> bot = Bot(token=config.TOKEN, 
-    ...           default=config.DEFAULT_CHAT_ID,
-    ...           retry_config=config.get_retry_config())
 
     Using custom retry configuration:
     >>> from retry import RetryConfig
